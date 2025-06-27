@@ -38,6 +38,6 @@ public class FileSound extends AbstractSoundInstance {
 			} catch (IOException e) {
 				throw new CompletionException(e);
 			}
-		}, Util.getDownloadWorkerExecutor());
+		}, Util.getMainWorkerExecutor());
 	}
 }

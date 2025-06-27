@@ -42,6 +42,6 @@ public class KeyListener {
 	}
 
 	public static String getHotKey() {
-		return acceptKey.getBoundKeyLocalizedText().getLiteralString();
+		return acceptKey.getBoundKeyLocalizedText().getString();
 	}
 }
