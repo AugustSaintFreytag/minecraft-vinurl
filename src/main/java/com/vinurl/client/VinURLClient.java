@@ -37,7 +37,7 @@ public class VinURLClient implements ClientModInitializer {
 			lines.remove(Text.translatable("item.vinurl.custom_record.desc").formatted(Formatting.GRAY));
 
 			if (CONFIG.showDescription()) {
-				String fileName = SoundManager.hashURL(stack.getOrCreateNbt().getString(URL_KEY));
+				String fileName = SoundManager.hashURL(stack.getOrCreateNbt().getString(DISC_URL_NBT_KEY));
 
 				if (!fileName.isEmpty()) {
 					lines.add(Text.literal(SoundManager.getDescription(fileName)).formatted(Formatting.GRAY));

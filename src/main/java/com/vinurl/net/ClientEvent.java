@@ -74,6 +74,7 @@ public class ClientEvent {
 			Vec3d position = payload.position().toCenterPos();
 			String id = SoundManager.hashURL(payload.url()) + "/download";
 			SoundManager.stopSound(position);
+			
 			if (Executable.YT_DLP.isProcessRunning(id)) {
 				Executable.YT_DLP.getProcessStream(id).unsubscribe(position.toString());
 				if (payload.canceled() && Executable.YT_DLP.getProcessStream(id).subscriberCount() <= 1) {

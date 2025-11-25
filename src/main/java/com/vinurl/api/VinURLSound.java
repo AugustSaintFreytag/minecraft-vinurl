@@ -17,7 +17,7 @@ public class VinURLSound {
 		NbtCompound nbt = stack.getOrCreateNbt();
 		for (PlayerEntity player : world.getPlayers()) {
 			if (player.getPos().distanceTo(position.toCenterPos()) <= JUKEBOX_RANGE) {
-				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.PlaySoundRecord(position, nbt.getString(URL_KEY), nbt.getBoolean(LOOP_KEY)));
+				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.PlaySoundRecord(position, nbt.getString(DISC_URL_NBT_KEY), nbt.getBoolean(DISC_LOOP_NBT_KEY)));
 			}
 		}
 	}
@@ -26,7 +26,7 @@ public class VinURLSound {
 		if (world == null || world.isClient) {return;}
 		NbtCompound nbt = stack.getOrCreateNbt();
 		for (PlayerEntity player : world.getPlayers()) {
-			NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.StopSoundRecord(position, nbt.getString(URL_KEY), cancel));
+			NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.StopSoundRecord(position, nbt.getString(DISC_URL_NBT_KEY), cancel));
 		}
 	}
 }

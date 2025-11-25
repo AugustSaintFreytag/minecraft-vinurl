@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static com.vinurl.util.Constants.CUSTOM_RECORD;
-import static com.vinurl.util.Constants.DURATION_KEY;
+import static com.vinurl.util.Constants.DISC_DURATION_KEY;
 
 @Mixin(JukeboxBlockEntity.class)
 public abstract class JukeboxMixin extends BlockEntity implements SingleStackInventory, Clearable {
@@ -60,7 +60,7 @@ public abstract class JukeboxMixin extends BlockEntity implements SingleStackInv
 	private void tick(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
 		if (getStack().getItem() == CUSTOM_RECORD) {
 			NbtCompound nbt = getStack().getOrCreateNbt();
-			if (tickCount > recordStartTick + nbt.getInt(DURATION_KEY) * 20L) {
+			if (tickCount > recordStartTick + nbt.getInt(DISC_DURATION_KEY) * 20L) {
 				stopPlaying();
 				VinURLSound.stop(world, getStack(), pos, false);
 			}

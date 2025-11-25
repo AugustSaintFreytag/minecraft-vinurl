@@ -21,31 +21,36 @@ import static com.vinurl.util.Constants.*;
 
 public class VinURLDisc extends MusicDiscItem {
 
-	public VinURLDisc() {
-		super(15, SONG, new FabricItemSettings().maxCount(1).rarity(Rarity.RARE), 3600);
+	public VinURLDisc(boolean isRewritable) {
+		super(15, SONG, new FabricItemSettings().maxCount(1).rarity(isRewritable ? Rarity.UNCOMMON : Rarity.RARE), 3600);
 	}
 
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);
+
 		if (!world.isClient) {
 			NbtCompound nbt = stack.getOrCreateNbt();
-			if (!nbt.getBoolean(LOCK_KEY)) {
-				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(nbt.getString(URL_KEY), nbt.getInt(DURATION_KEY), nbt.getBoolean(LOOP_KEY)));
+			if (!nbt.getBoolean(DISC_LOCKED_NBT_KEY)) {
+				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(nbt.getString(DISC_URL_NBT_KEY), nbt.getInt(DISC_DURATION_KEY), nbt.getBoolean(DISC_LOOP_NBT_KEY)));
 			} else {
-				player.sendMessage(Text.literal("Locked 🔒"), true);
+				player.sendMessage(Text.translatable("text.vinurl.custom_record.locked.tooltip"), true);
 			}
 		}
+
 		return TypedActionResult.success(stack);
 	}
 
 	@Override
 	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
 		NbtCompound nbt = stack.getOrCreateNbt();
-		if (nbt.equals(new NbtCompound())) {return;}
+		if (nbt.equals(new NbtCompound())) {
+			return;
+		}
 
 		tooltip.add(Text.translatable("itemGroup.tools").formatted(Formatting.BLUE));
-		if (nbt.getBoolean(LOCK_KEY)) {
-			tooltip.add(Text.literal("Locked 🔒").formatted(Formatting.GRAY));
+		
+		if (nbt.getBoolean(DISC_LOCKED_NBT_KEY)) {
+			tooltip.add(Text.translatable("text.vinurl.custom_record.locked.tooltip").formatted(Formatting.GRAY));
 		}
 	}
 }

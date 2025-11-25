@@ -54,10 +54,10 @@ public class ServerEvent {
 			player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
 
 			stack.setNbt(new NbtCompound() {{
-				putString(URL_KEY, url);
-				putInt(DURATION_KEY, payload.duration());
-				putBoolean(LOOP_KEY, payload.loop());
-				putBoolean(LOCK_KEY, payload.lock());
+				putString(DISC_URL_NBT_KEY, url);
+				putInt(DISC_DURATION_KEY, payload.duration());
+				putBoolean(DISC_LOOP_NBT_KEY, payload.loop());
+				putBoolean(DISC_LOCKED_NBT_KEY, payload.lock());
 			}});
 		});
 	}
