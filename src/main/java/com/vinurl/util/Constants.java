@@ -19,7 +19,7 @@ public class Constants {
 
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
 
-	public static final Identifier PLACEHOLDER_SOUND_ID = Identifier.of(MOD_ID, "placeholder_sound");
+	public static final Identifier PLACEHOLDER_SOUND_ID = Identifier.of(MOD_ID, "placeholder");
 
 	public static SoundEvent SONG;
 

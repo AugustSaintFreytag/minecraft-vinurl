@@ -32,7 +32,9 @@ public class VinURLSound {
 		if (world == null || world.isClient) {
 			return;
 		}
+
 		NbtCompound nbt = stack.getOrCreateNbt();
+
 		for (PlayerEntity player : world.getPlayers()) {
 			NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.StopSoundRecord(position, nbt.getString(DISC_URL_NBT_KEY), cancel));
 		}
