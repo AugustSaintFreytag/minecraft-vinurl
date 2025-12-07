@@ -1,9 +1,7 @@
 package com.vinurl.api;
 
-import static com.vinurl.util.Constants.DISC_LOOP_NBT_KEY;
-import static com.vinurl.util.Constants.DISC_URL_NBT_KEY;
-import static com.vinurl.util.Constants.NETWORK_CHANNEL;
-
+import com.vinurl.VinURLNetwork;
+import com.vinurl.items.VinURLDisc;
 import com.vinurl.net.ClientEvent;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,8 +22,8 @@ public class VinURLSound {
 
 		for (PlayerEntity player : world.getPlayers()) {
 			if (player.getPos().distanceTo(position.toCenterPos()) <= JUKEBOX_RANGE) {
-				NETWORK_CHANNEL.serverHandle(player).send(
-						new ClientEvent.PlaySoundRecord(position, nbt.getString(DISC_URL_NBT_KEY), nbt.getBoolean(DISC_LOOP_NBT_KEY)));
+				VinURLNetwork.NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.PlaySoundRecord(position,
+						nbt.getString(VinURLDisc.DISC_URL_NBT_KEY), nbt.getBoolean(VinURLDisc.DISC_LOOP_NBT_KEY)));
 			}
 		}
 	}
@@ -38,7 +36,8 @@ public class VinURLSound {
 		NbtCompound nbt = stack.getOrCreateNbt();
 
 		for (PlayerEntity player : world.getPlayers()) {
-			NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.StopSoundRecord(position, nbt.getString(DISC_URL_NBT_KEY), cancel));
+			VinURLNetwork.NETWORK_CHANNEL.serverHandle(player)
+					.send(new ClientEvent.StopSoundRecord(position, nbt.getString(VinURLDisc.DISC_URL_NBT_KEY), cancel));
 		}
 	}
 }

@@ -1,8 +1,6 @@
 package com.vinurl.exe;
 
 import static com.vinurl.client.VinURLClient.CONFIG;
-import static com.vinurl.util.Constants.LOGGER;
-import static com.vinurl.util.Constants.VINURLPATH;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,6 +23,8 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.commons.lang3.SystemUtils;
 
+import com.vinurl.VinURL;
+
 public enum Executable {
 
 	YT_DLP("yt-dlp", "yt-dlp/yt-dlp",
@@ -34,7 +34,7 @@ public enum Executable {
 	FFMPEG("ffmpeg", "eugeneware/ffmpeg-static",
 			String.format("ffmpeg-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")));
 
-	public final Path DIRECTORY = VINURLPATH.resolve("executables");
+	public final Path DIRECTORY = VinURL.PATH.resolve("executables");
 	private final String FILE_NAME;
 	private final String REPOSITORY_NAME;
 	private final String REPOSITORY_FILE;
@@ -76,7 +76,7 @@ public enum Executable {
 				stream.process.destroyForcibly();
 				stream.process.onExit().join();
 			} catch (Exception e) {
-				LOGGER.error("Failed to kill process with ID: {}", id, e);
+				VinURL.LOGGER.error("Failed to kill process with ID: {}", id, e);
 			}
 		}
 	}

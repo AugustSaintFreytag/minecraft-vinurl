@@ -1,8 +1,6 @@
 package com.vinurl.client;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
-import static com.vinurl.util.Constants.LOGGER;
-import static com.vinurl.util.Constants.VINURLPATH;
 
 import java.io.File;
 import java.net.URI;
@@ -10,6 +8,7 @@ import java.nio.file.Path;
 
 import org.apache.commons.io.FileUtils;
 
+import com.vinurl.VinURL;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.ProgressOverlay;
 
@@ -19,7 +18,7 @@ public class SoundDownloadManager {
 
 	// Configuration
 
-	public static final Path AUDIO_DIRECTORY = VINURLPATH.resolve("downloads");
+	public static final Path AUDIO_DIRECTORY = VinURL.PATH.resolve("downloads");
 
 	// Download
 
@@ -43,9 +42,9 @@ public class SoundDownloadManager {
 
 			switch (type) {
 			case "PROGRESS:" -> ProgressOverlay.set(fileName, Integer.parseInt(message));
-			case "WARNING:" -> LOGGER.warn(message);
-			case "ERROR:" -> LOGGER.error(message);
-			default -> LOGGER.info(line);
+			case "WARNING:" -> VinURL.LOGGER.warn(message);
+			case "ERROR:" -> VinURL.LOGGER.error(message);
+			default -> VinURL.LOGGER.info(line);
 			}
 		}).onError(error -> {
 			ProgressOverlay.stopFailed(fileName);

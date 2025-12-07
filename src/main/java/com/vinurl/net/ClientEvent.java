@@ -1,10 +1,10 @@
 package com.vinurl.net;
 
 import static com.vinurl.client.VinURLClient.CONFIG;
-import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 
 import java.util.List;
 
+import com.vinurl.VinURLNetwork;
 import com.vinurl.client.KeyListener;
 import com.vinurl.client.SoundDescriptionManager;
 import com.vinurl.client.SoundDownloadManager;
@@ -22,7 +22,7 @@ public class ClientEvent {
 
 	public static void register() {
 		// Client event for playing sounds
-		NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (payload, context) -> {
+		VinURLNetwork.NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (payload, context) -> {
 			Vec3d position = payload.position().toCenterPos();
 			String url = payload.url();
 			boolean loop = payload.loop();
@@ -70,7 +70,7 @@ public class ClientEvent {
 		});
 
 		// Client event for stopping sounds
-		NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (payload, context) -> {
+		VinURLNetwork.NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (payload, context) -> {
 			Vec3d position = payload.position().toCenterPos();
 			String id = SoundDescriptionManager.hashURL(payload.url()) + "/download";
 			SoundManager.stopSound(position);
@@ -84,7 +84,7 @@ public class ClientEvent {
 		});
 
 		// Client event to open record ui
-		NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
+		VinURLNetwork.NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
 			context.runtime().setScreen(new URLScreen(payload.url(), payload.duration(), payload.loop(), payload.rewritable()));
 		});
 	}

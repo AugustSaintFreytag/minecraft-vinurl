@@ -1,9 +1,5 @@
 package com.vinurl.mixin;
 
-import static com.vinurl.util.Constants.CUSTOM_RECORD;
-import static com.vinurl.util.Constants.CUSTOM_RECORD_REWRITABLE;
-import static com.vinurl.util.Constants.DISC_DURATION_KEY;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -11,7 +7,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.vinurl.VinURLItems;
 import com.vinurl.api.VinURLSound;
+import com.vinurl.items.VinURLDisc;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -66,7 +64,7 @@ public abstract class JukeboxBlockEntityMixin extends BlockEntity implements Sin
 	private void tick(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
 		if (isVinURLRecord()) {
 			NbtCompound nbt = getStack().getOrCreateNbt();
-			if (tickCount > recordStartTick + nbt.getInt(DISC_DURATION_KEY) * 20L) {
+			if (tickCount > recordStartTick + nbt.getInt(VinURLDisc.DISC_DURATION_KEY) * 20L) {
 				stopPlaying();
 				VinURLSound.stop(world, getStack(), pos, false);
 			}
@@ -74,6 +72,6 @@ public abstract class JukeboxBlockEntityMixin extends BlockEntity implements Sin
 	}
 
 	private boolean isVinURLRecord() {
-		return getStack().isOf(CUSTOM_RECORD) || getStack().isOf(CUSTOM_RECORD_REWRITABLE);
+		return getStack().isOf(VinURLItems.CUSTOM_RECORD) || getStack().isOf(VinURLItems.CUSTOM_RECORD_REWRITABLE);
 	}
 }

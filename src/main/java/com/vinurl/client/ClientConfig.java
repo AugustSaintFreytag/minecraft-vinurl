@@ -1,10 +1,10 @@
 package com.vinurl.client;
 
-import static com.vinurl.util.Constants.MOD_ID;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.vinurl.VinURL;
 
 import io.wispforest.owo.config.annotation.Config;
 import io.wispforest.owo.config.annotation.Modmenu;
@@ -12,7 +12,7 @@ import io.wispforest.owo.config.annotation.PredicateConstraint;
 import io.wispforest.owo.config.annotation.SectionHeader;
 
 @SuppressWarnings("unused")
-@Modmenu(modId = MOD_ID)
+@Modmenu(modId = VinURL.MOD_ID)
 @Config(name = "VinURLConfig", wrapperName = "VinURLConfig")
 public class ClientConfig {
 

@@ -1,13 +1,14 @@
 package com.vinurl.client;
 
 import static com.vinurl.client.SoundDownloadManager.getAudioFile;
-import static com.vinurl.util.Constants.PLACEHOLDER_SOUND_ID;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+
+import com.vinurl.VinURLSounds;
 
 import net.minecraft.client.sound.AbstractSoundInstance;
 import net.minecraft.client.sound.AudioStream;
@@ -24,7 +25,7 @@ public class FileSound extends AbstractSoundInstance {
 	public final String fileName;
 
 	public FileSound(String fileName, Vec3d position, boolean loop) {
-		super(PLACEHOLDER_SOUND_ID, SoundCategory.RECORDS, SoundInstance.createRandom());
+		super(VinURLSounds.CUSTOM_MUSIC, SoundCategory.RECORDS, SoundInstance.createRandom());
 		this.fileName = fileName;
 		this.repeat = loop;
 		this.x = position.x;
