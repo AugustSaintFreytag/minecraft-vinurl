@@ -9,11 +9,11 @@
                             <children>
                                 <stack-layout>
                                     <children>
-                                        <texture id="text_field" texture="vinurl:textures/gui/text_field.png" texture-height="16" texture-width="110"
-                                                 region-height="16" region-width="110">
+                                        <texture id="text_field" texture="vinurl:textures/gui/text_field.png" texture-height="16" texture-width="131"
+                                                 region-height="16" region-width="131">
                                         </texture>
-                                        <texture id="text_field_disabled" texture="vinurl:textures/gui/text_field_disabled.png" texture-height="16" texture-width="110"
-                                                 region-height="16" region-width="110">
+                                        <texture id="text_field_disabled" texture="vinurl:textures/gui/text_field_disabled.png" texture-height="16" texture-width="131"
+                                                 region-height="16" region-width="131">
                                         </texture>
                                         <label id="placeholder_label">
                                             <text>URL</text>
@@ -29,7 +29,7 @@
                                                 <left>4</left>
                                             </margins>
                                             <sizing>
-                                                <horizontal method="fixed">100</horizontal>
+                                                <horizontal method="fixed">121</horizontal>
                                             </sizing>
                                             <show-background>false</show-background>
                                         </text-box>
@@ -50,17 +50,6 @@
 
                                 <button id="loop_button">
                                     <tooltip-text>Loop</tooltip-text>
-                                    <sizing>
-                                        <horizontal method="fixed">16</horizontal>
-                                        <vertical method="fixed">16</vertical>
-                                    </sizing>
-                                    <margins>
-                                        <left>5</left>
-                                    </margins>
-                                </button>
-
-                                <button id="lock_button">
-                                    <tooltip-text>Lock</tooltip-text>
                                     <sizing>
                                         <horizontal method="fixed">16</horizontal>
                                         <vertical method="fixed">16</vertical>
