@@ -1,33 +1,32 @@
 package com.vinurl.cmd;
 
-import com.mojang.brigadier.context.CommandContext;
-import com.vinurl.client.SoundManager;
-import com.vinurl.exe.Executable;
-import io.wispforest.owo.config.ui.ConfigScreen;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.text.Text;
-import org.apache.commons.io.FileUtils;
+import static com.vinurl.client.VinURLClient.CLIENT;
+import static com.vinurl.util.Constants.MOD_ID;
 
 import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-import static com.vinurl.client.VinURLClient.CLIENT;
-import static com.vinurl.util.Constants.MOD_ID;
+import org.apache.commons.io.FileUtils;
 
+import com.mojang.brigadier.context.CommandContext;
+import com.vinurl.client.SoundManager;
+import com.vinurl.exe.Executable;
+
+import io.wispforest.owo.config.ui.ConfigScreen;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.text.Text;
 
 public class Commands {
 
 	public static void register() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-			dispatcher.register(ClientCommandManager.literal(MOD_ID)
-				.then(ClientCommandManager.literal("delete").executes(Commands::deleteAudioFiles))
-				.then(ClientCommandManager.literal("update").executes(Commands::updateExecutables))
-				.then(ClientCommandManager.literal("config").executes(Commands::openConfig))
-			)
-		);
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher,
+				registryAccess) -> dispatcher.register(ClientCommandManager.literal(MOD_ID)
+						.then(ClientCommandManager.literal("delete").executes(Commands::deleteAudioFiles))
+						.then(ClientCommandManager.literal("update").executes(Commands::updateExecutables))
+						.then(ClientCommandManager.literal("config").executes(Commands::openConfig))));
 	}
 
 	private static int deleteAudioFiles(CommandContext<FabricClientCommandSource> ctx) {

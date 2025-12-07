@@ -1,13 +1,15 @@
 package com.vinurl.client;
 
-import io.wispforest.owo.config.annotation.*;
+import static com.vinurl.util.Constants.MOD_ID;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vinurl.util.Constants.MOD_ID;
-
+import io.wispforest.owo.config.annotation.Config;
+import io.wispforest.owo.config.annotation.Modmenu;
+import io.wispforest.owo.config.annotation.PredicateConstraint;
+import io.wispforest.owo.config.annotation.SectionHeader;
 
 @SuppressWarnings("unused")
 @Modmenu(modId = MOD_ID)
@@ -36,9 +38,7 @@ public class ClientConfig {
 	public AudioQuality audioBitrate = AudioQuality.MEDIUM;
 
 	public enum AudioQuality {
-		LOW("48K"),
-		MEDIUM("96K"),
-		HIGH("128K");
+		LOW("48K"), MEDIUM("96K"), HIGH("128K");
 
 		private final String value;
 

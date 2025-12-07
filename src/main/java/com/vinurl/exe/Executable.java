@@ -1,6 +1,8 @@
 package com.vinurl.exe;
 
-import org.apache.commons.lang3.SystemUtils;
+import static com.vinurl.client.VinURLClient.CONFIG;
+import static com.vinurl.util.Constants.LOGGER;
+import static com.vinurl.util.Constants.VINURLPATH;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,18 +23,16 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static com.vinurl.client.VinURLClient.CONFIG;
-import static com.vinurl.util.Constants.LOGGER;
-import static com.vinurl.util.Constants.VINURLPATH;
+import org.apache.commons.lang3.SystemUtils;
 
 public enum Executable {
 
 	YT_DLP("yt-dlp", "yt-dlp/yt-dlp",
-		String.format("yt-dlp%s", (SystemUtils.IS_OS_LINUX ? "_linux" : SystemUtils.IS_OS_MAC ? "_macos" : ".exe"))),
+			String.format("yt-dlp%s", (SystemUtils.IS_OS_LINUX ? "_linux" : SystemUtils.IS_OS_MAC ? "_macos" : ".exe"))),
 	FFPROBE("ffprobe", "eugeneware/ffmpeg-static",
-		String.format("ffprobe-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32"))),
+			String.format("ffprobe-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32"))),
 	FFMPEG("ffmpeg", "eugeneware/ffmpeg-static",
-		String.format("ffmpeg-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")));
+			String.format("ffmpeg-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")));
 
 	public final Path DIRECTORY = VINURLPATH.resolve("executables");
 	private final String FILE_NAME;
@@ -120,7 +120,7 @@ public enum Executable {
 				Files.copy(inputStream, FILE_PATH, StandardCopyOption.REPLACE_EXISTING);
 			}
 			if (SystemUtils.IS_OS_UNIX) {
-				Runtime.getRuntime().exec(new String[] {"chmod", "+x", FILE_PATH.toString()});
+				Runtime.getRuntime().exec(new String[] { "chmod", "+x", FILE_PATH.toString() });
 			}
 			return createVersionFile(latestVersion());
 		} catch (Exception e) {
@@ -205,9 +205,8 @@ public enum Executable {
 		private void startProcess() {
 			try {
 				process = new ProcessBuilder()
-					.command(Stream.concat(Stream.of(FILE_PATH.toString()), Stream.of(arguments)).toArray(String[]::new))
-					.redirectErrorStream(true)
-					.start();
+						.command(Stream.concat(Stream.of(FILE_PATH.toString()), Stream.of(arguments)).toArray(String[]::new))
+						.redirectErrorStream(true).start();
 
 				try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 					String line;
@@ -232,9 +231,12 @@ public enum Executable {
 
 		public class SubscriberBuilder {
 			private final String subscriberId;
-			private Consumer<String> onOutput = s -> {};
-			private Consumer<Throwable> onError = t -> {};
-			private Runnable onComplete = () -> {};
+			private Consumer<String> onOutput = s -> {
+			};
+			private Consumer<Throwable> onError = t -> {
+			};
+			private Runnable onComplete = () -> {
+			};
 
 			public SubscriberBuilder(String subscriberId) {
 				this.subscriberId = subscriberId;

@@ -16,10 +16,10 @@ public class ProgressEntry {
 	void updateProgress(int progress) {
 		this.progress = (progress >= MIN && progress <= MAX) ? progress : ERROR;
 		this.stateChangeTime = System.currentTimeMillis();
-		this.state = switch(this.progress) {
-			case ERROR -> ProgressState.INTERRUPTED;
-			case MAX -> ProgressState.TRANSCODING;
-			default -> ProgressState.DOWNLOADING;
+		this.state = switch (this.progress) {
+		case ERROR -> ProgressState.INTERRUPTED;
+		case MAX -> ProgressState.TRANSCODING;
+		default -> ProgressState.DOWNLOADING;
 		};
 	}
 
@@ -28,9 +28,7 @@ public class ProgressEntry {
 	}
 
 	public enum ProgressState {
-		DOWNLOADING,
-		TRANSCODING,
-		INTERRUPTED;
+		DOWNLOADING, TRANSCODING, INTERRUPTED;
 
 		@Override
 		public String toString() {

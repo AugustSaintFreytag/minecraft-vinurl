@@ -1,26 +1,26 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "misc",
-  "pattern": [
-    "qDq",
-    "ddd",
-    "CCC"
-  ],
-  "key": {
-    "C": {
-      "item": "minecraft:clay_ball"
-    },
-    "d": {
-      "item": "minecraft:black_dye"
-    },
-    "q": {
-      "item": "create:polished_rose_quartz"
-    },
-    "D": {
-      "item": "minecraft:diamond"
-    }
-  },
-  "result": {
-    "item": "vinurl:custom_record_rewritable"
-  }
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern": [
+		"qDq",
+		"ddd",
+		"CCC"
+	],
+	"key": {
+		"C": {
+			"item": "minecraft:clay_ball"
+		},
+		"d": {
+			"item": "minecraft:black_dye"
+		},
+		"q": {
+			"item": "create:polished_rose_quartz"
+		},
+		"D": {
+			"item": "minecraft:diamond"
+		}
+	},
+	"result": {
+		"item": "vinurl:custom_record_rewritable"
+	}
 }

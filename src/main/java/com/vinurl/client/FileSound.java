@@ -1,10 +1,7 @@
 package com.vinurl.client;
 
-import net.minecraft.client.sound.*;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.Vec3d;
+import static com.vinurl.client.SoundManager.getAudioFile;
+import static com.vinurl.util.Constants.PLACEHOLDER_SOUND_ID;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,8 +9,16 @@ import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
-import static com.vinurl.client.SoundManager.getAudioFile;
-import static com.vinurl.util.Constants.PLACEHOLDER_SOUND_ID;
+import net.minecraft.client.sound.AbstractSoundInstance;
+import net.minecraft.client.sound.AudioStream;
+import net.minecraft.client.sound.OggAudioStream;
+import net.minecraft.client.sound.RepeatingAudioStream;
+import net.minecraft.client.sound.SoundInstance;
+import net.minecraft.client.sound.SoundLoader;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
+import net.minecraft.util.math.Vec3d;
 
 public class FileSound extends AbstractSoundInstance {
 	public final String fileName;
@@ -32,9 +37,7 @@ public class FileSound extends AbstractSoundInstance {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
 				InputStream inputStream = new FileInputStream(getAudioFile(fileName));
-				return repeatInstantly
-					? new RepeatingAudioStream(OggAudioStream::new, inputStream)
-					: new OggAudioStream(inputStream);
+				return repeatInstantly ? new RepeatingAudioStream(OggAudioStream::new, inputStream) : new OggAudioStream(inputStream);
 			} catch (IOException e) {
 				throw new CompletionException(e);
 			}

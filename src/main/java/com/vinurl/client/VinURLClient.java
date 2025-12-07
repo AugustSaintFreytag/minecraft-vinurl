@@ -1,9 +1,15 @@
 package com.vinurl.client;
 
+import static com.vinurl.util.Constants.CUSTOM_RECORD;
+import static com.vinurl.util.Constants.CUSTOM_RECORD_REWRITABLE;
+import static com.vinurl.util.Constants.DISC_URL_NBT_KEY;
+import static com.vinurl.util.Constants.LOGGER;
+
 import com.vinurl.cmd.Commands;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.ProgressOverlay;
 import com.vinurl.net.ClientEvent;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -11,8 +17,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-
-import static com.vinurl.util.Constants.*;
 
 public class VinURLClient implements ClientModInitializer {
 	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();
@@ -41,7 +45,7 @@ public class VinURLClient implements ClientModInitializer {
 			}
 
 			if (stack.isOf(CUSTOM_RECORD_REWRITABLE)) {
-				lines.remove(Text.translatable("item.vinurl.custom_record_rewritable.desc").formatted(Formatting.GRAY));	
+				lines.remove(Text.translatable("item.vinurl.custom_record_rewritable.desc").formatted(Formatting.GRAY));
 			}
 
 			if (CONFIG.showDescription()) {

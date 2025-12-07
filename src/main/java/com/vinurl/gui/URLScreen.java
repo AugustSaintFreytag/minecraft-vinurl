@@ -1,22 +1,29 @@
 package com.vinurl.gui;
 
+import static com.vinurl.client.VinURLClient.CLIENT;
+import static com.vinurl.util.Constants.LOGGER;
+import static com.vinurl.util.Constants.MOD_ID;
+import static com.vinurl.util.Constants.NETWORK_CHANNEL;
+
+import org.lwjgl.glfw.GLFW;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.vinurl.client.SoundManager;
 import com.vinurl.exe.Executable;
 import com.vinurl.net.ServerEvent;
+
 import io.wispforest.owo.ui.base.BaseUIModelScreen;
-import io.wispforest.owo.ui.component.*;
+import io.wispforest.owo.ui.component.ButtonComponent;
+import io.wispforest.owo.ui.component.LabelComponent;
+import io.wispforest.owo.ui.component.SlimSliderComponent;
+import io.wispforest.owo.ui.component.TextBoxComponent;
+import io.wispforest.owo.ui.component.TextureComponent;
 import io.wispforest.owo.ui.container.StackLayout;
 import io.wispforest.owo.ui.core.PositionedRectangle;
 import io.wispforest.owo.ui.util.NinePatchTexture;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.lwjgl.glfw.GLFW;
-
-import static com.vinurl.client.VinURLClient.CLIENT;
-import static com.vinurl.util.Constants.*;
-import static com.vinurl.util.Constants.LOGGER;
 
 public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	private String url;
@@ -29,26 +36,20 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 
 	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		Identifier texture = !simulate ? (button.active && button.isHovered() ?
-			Identifier.of(MOD_ID, "simulate_button_hovered") :
-			Identifier.of(MOD_ID, "simulate_button")) :
-			Identifier.of(MOD_ID, "simulate_button_disabled");
+		Identifier texture = !simulate ? (button.active && button.isHovered() ? Identifier.of(MOD_ID, "simulate_button_hovered")
+				: Identifier.of(MOD_ID, "simulate_button")) : Identifier.of(MOD_ID, "simulate_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	private final ButtonComponent.Renderer LOOP_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		Identifier texture = loop ?
-			Identifier.of(MOD_ID, "loop_button") :
-			Identifier.of(MOD_ID, "loop_button_disabled");
+		Identifier texture = loop ? Identifier.of(MOD_ID, "loop_button") : Identifier.of(MOD_ID, "loop_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	private final ButtonComponent.Renderer LOCK_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		Identifier texture = lock ?
-			Identifier.of(MOD_ID, "lock_button") :
-			Identifier.of(MOD_ID, "lock_button_disabled");
+		Identifier texture = lock ? Identifier.of(MOD_ID, "lock_button") : Identifier.of(MOD_ID, "lock_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
@@ -86,7 +87,9 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 			loopButton.active = simulateButton.active = true;
 			return true;
 		});
-		durationSlider.onChanged().subscribe(newValue -> {duration = (int) newValue;});
+		durationSlider.onChanged().subscribe(newValue -> {
+			duration = (int) newValue;
+		});
 		durationSlider.mouseScroll().subscribe((mouseX, mouseY, amount) -> {
 			durationSlider.value(Math.max(durationSlider.min(), Math.min(durationSlider.max(), durationSlider.value() + amount)));
 			return true;
@@ -98,33 +101,37 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		// lockButton.active = rewritable;
 		// lockButton.renderer(LOCK_BUTTON_TEXTURE);
 		// lockButton.onPress(button -> {
-		// 	if (rewritable) {
-		// 		lock = !lock;
-		// 	}
+		// if (rewritable) {
+		// lock = !lock;
+		// }
 		// });
 
 		simulateButton.renderer(SIMULATE_BUTTON_TEXTURE);
 		simulateButton.onPress(button -> {
-			if (simulate) {return;}
+			if (simulate) {
+				return;
+			}
 			simulate = true;
 			button.tooltip(Text.literal("Calculating..."));
-			Executable.YT_DLP.executeCommand(
-				SoundManager.hashURL(url) + "/duration", url, "--print", "DURATION: %(duration)d", "--no-playlist"
-			).subscribe("duration")
-				.onOutput(line -> {
-					String type = line.substring(0, line.indexOf(':') + 1);
-					String message = line.substring(type.length()).trim();
+			Executable.YT_DLP
+					.executeCommand(SoundManager.hashURL(url) + "/duration", url, "--print", "DURATION: %(duration)d", "--no-playlist")
+					.subscribe("duration").onOutput(line -> {
+						String type = line.substring(0, line.indexOf(':') + 1);
+						String message = line.substring(type.length()).trim();
 
-					switch (type) {
+						switch (type) {
 						case "DURATION:" -> durationSlider.value(Integer.parseInt(message));
 						case "WARNING:" -> LOGGER.warn(message);
 						case "ERROR:" -> LOGGER.error(message);
 						default -> LOGGER.info(line);
-					}
-				})
-				.onError(error -> {button.tooltip(Text.literal("Automatic Duration")); simulate = false;})
-				.onComplete(() -> {button.tooltip(Text.literal("Automatic Duration")); simulate = false;})
-			.start();
+						}
+					}).onError(error -> {
+						button.tooltip(Text.literal("Automatic Duration"));
+						simulate = false;
+					}).onComplete(() -> {
+						button.tooltip(Text.literal("Automatic Duration"));
+						simulate = false;
+					}).start();
 		});
 
 		urlTextbox.onChanged().subscribe(text -> placeholderLabel.text(Text.literal((url = text).isEmpty() ? "URL" : "")));
@@ -148,11 +155,8 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		super.render(context, mouseX, mouseY, delta);
 
 		if (sliderDragged) {
-			context.drawTooltip(
-				CLIENT.textRenderer,
-				Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)),
-				mouseX, mouseY
-			);
+			context.drawTooltip(CLIENT.textRenderer, Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)), mouseX,
+					mouseY);
 		}
 	}
 
