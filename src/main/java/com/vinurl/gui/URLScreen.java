@@ -8,7 +8,7 @@ import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.vinurl.client.SoundManager;
+import com.vinurl.client.SoundDescriptionManager;
 import com.vinurl.exe.Executable;
 import com.vinurl.net.ServerEvent;
 
@@ -127,9 +127,8 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 			simulate = true;
 			button.tooltip(Text.literal("Calculating..."));
 
-			Executable.YT_DLP
-					.executeCommand(SoundManager.hashURL(url) + "/duration", url, "--print", "DURATION: %(duration)d", "--no-playlist")
-					.subscribe("duration").onOutput(line -> {
+			Executable.YT_DLP.executeCommand(SoundDescriptionManager.hashURL(url) + "/duration", url, "--print", "DURATION: %(duration)d",
+					"--no-playlist").subscribe("duration").onOutput(line -> {
 						String type = line.substring(0, line.indexOf(':') + 1);
 						String message = line.substring(type.length()).trim();
 

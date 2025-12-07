@@ -52,12 +52,12 @@ public class SoundDownloadManager {
 			deleteSound(fileName);
 		}).onComplete(() -> {
 			ProgressOverlay.stop(fileName);
-			SoundManager.descriptionToCache(fileName);
+			SoundDescriptionManager.cacheDescription(fileName);
 		}).start();
 	}
 
 	private static String[] getPostProcessorArguments() {
-		if (VinURLClient.CONFIG.degradeAudioQuality) {
+		if (VinURLClient.CONFIG.degradeAudioQuality()) {
 			return new String[] { "--postprocessor-args",
 					"ffmpeg:-af 'highpass=f=120, lowpass=f=9500, acompressor=threshold=-12dB:ratio=2.5:attack=10:release=200, acrusher=bits=10:mix=0.2, vibrato=f=4:d=0.003' -ac 1 -c:a libvorbis -q:a 3" };
 		}

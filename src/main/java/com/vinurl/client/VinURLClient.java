@@ -49,10 +49,10 @@ public class VinURLClient implements ClientModInitializer {
 			}
 
 			if (CONFIG.showDescription()) {
-				String fileName = SoundManager.hashURL(stack.getOrCreateNbt().getString(DISC_URL_NBT_KEY));
+				String fileName = SoundDescriptionManager.hashURL(stack.getOrCreateNbt().getString(DISC_URL_NBT_KEY));
 
 				if (!fileName.isEmpty()) {
-					lines.add(Text.literal(SoundManager.getDescription(fileName)).formatted(Formatting.GRAY));
+					lines.add(Text.literal(SoundDescriptionManager.getDescription(fileName)).formatted(Formatting.GRAY));
 				}
 			}
 		});

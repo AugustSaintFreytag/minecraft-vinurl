@@ -6,6 +6,7 @@ import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 import java.util.List;
 
 import com.vinurl.client.KeyListener;
+import com.vinurl.client.SoundDescriptionManager;
 import com.vinurl.client.SoundDownloadManager;
 import com.vinurl.client.SoundManager;
 import com.vinurl.exe.Executable;
@@ -25,7 +26,7 @@ public class ClientEvent {
 			Vec3d position = payload.position().toCenterPos();
 			String url = payload.url();
 			boolean loop = payload.loop();
-			String fileName = SoundManager.hashURL(url);
+			String fileName = SoundDescriptionManager.hashURL(url);
 			MinecraftClient client = context.runtime();
 
 			if (client.player == null || url.isEmpty()) {
@@ -71,7 +72,7 @@ public class ClientEvent {
 		// Client event for stopping sounds
 		NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (payload, context) -> {
 			Vec3d position = payload.position().toCenterPos();
-			String id = SoundManager.hashURL(payload.url()) + "/download";
+			String id = SoundDescriptionManager.hashURL(payload.url()) + "/download";
 			SoundManager.stopSound(position);
 
 			if (Executable.YT_DLP.isProcessRunning(id)) {
