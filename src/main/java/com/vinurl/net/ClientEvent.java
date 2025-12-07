@@ -1,19 +1,20 @@
 package com.vinurl.net;
 
-import com.vinurl.client.SoundManager;
+import static com.vinurl.client.VinURLClient.CONFIG;
+import static com.vinurl.util.Constants.NETWORK_CHANNEL;
+
+import java.util.List;
+
 import com.vinurl.client.KeyListener;
+import com.vinurl.client.SoundManager;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.URLScreen;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.List;
-
-import static com.vinurl.client.VinURLClient.CONFIG;
-import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 
 public class ClientEvent {
 
@@ -26,7 +27,9 @@ public class ClientEvent {
 			String fileName = SoundManager.hashURL(url);
 			MinecraftClient client = context.runtime();
 
-			if (client.player == null || url.isEmpty()) {return;}
+			if (client.player == null || url.isEmpty()) {
+				return;
+			}
 
 			SoundManager.addSound(fileName, position, loop);
 
@@ -50,13 +53,8 @@ public class ClientEvent {
 					return;
 				}
 
-				client.player.sendMessage(
-					Text.literal("Press ")
-						.append(Text.literal(KeyListener.getHotKey()).formatted(Formatting.YELLOW))
-						.append(" to whitelist ")
-						.append(Text.literal(baseURL).formatted(Formatting.YELLOW)),
-					true
-				);
+				client.player.sendMessage(Text.literal("Press ").append(Text.literal(KeyListener.getHotKey()).formatted(Formatting.YELLOW))
+						.append(" to whitelist ").append(Text.literal(baseURL).formatted(Formatting.YELLOW)), true);
 
 				KeyListener.waitForKeyPress().thenAccept(confirmed -> {
 					if (confirmed) {
@@ -74,7 +72,7 @@ public class ClientEvent {
 			Vec3d position = payload.position().toCenterPos();
 			String id = SoundManager.hashURL(payload.url()) + "/download";
 			SoundManager.stopSound(position);
-			
+
 			if (Executable.YT_DLP.isProcessRunning(id)) {
 				Executable.YT_DLP.getProcessStream(id).unsubscribe(position.toString());
 				if (payload.canceled() && Executable.YT_DLP.getProcessStream(id).subscriberCount() <= 1) {
@@ -89,9 +87,12 @@ public class ClientEvent {
 		});
 	}
 
-	public record PlaySoundRecord(BlockPos position, String url, boolean loop) {}
+	public record PlaySoundRecord(BlockPos position, String url, boolean loop) {
+	}
 
-	public record StopSoundRecord(BlockPos position, String url, boolean canceled) {}
+	public record StopSoundRecord(BlockPos position, String url, boolean canceled) {
+	}
 
-	public record GUIRecord(String url, int duration, boolean loop, boolean rewritable) {}
+	public record GUIRecord(String url, int duration, boolean loop, boolean rewritable) {
+	}
 }

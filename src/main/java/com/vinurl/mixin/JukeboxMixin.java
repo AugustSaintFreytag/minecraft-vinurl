@@ -1,6 +1,18 @@
 package com.vinurl.mixin;
 
+import static com.vinurl.util.Constants.CUSTOM_RECORD;
+import static com.vinurl.util.Constants.CUSTOM_RECORD_REWRITABLE;
+import static com.vinurl.util.Constants.DISC_DURATION_KEY;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 import com.vinurl.api.VinURLSound;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -11,26 +23,19 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Clearable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import static com.vinurl.util.Constants.CUSTOM_RECORD;
-import static com.vinurl.util.Constants.CUSTOM_RECORD_REWRITABLE;
-import static com.vinurl.util.Constants.DISC_DURATION_KEY;
 
 @Mixin(JukeboxBlockEntity.class)
 public abstract class JukeboxMixin extends BlockEntity implements SingleStackInventory, Clearable {
 
-	@Shadow private long tickCount;
-
-	@Shadow private long recordStartTick;
+	@Shadow
+	private long tickCount;
 
 	@Shadow
-	private void stopPlaying() {}
+	private long recordStartTick;
+
+	@Shadow
+	private void stopPlaying() {
+	}
 
 	public JukeboxMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);

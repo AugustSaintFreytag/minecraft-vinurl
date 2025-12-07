@@ -1,30 +1,28 @@
 package com.vinurl.util;
 
-import com.vinurl.items.VinURLDisc;
-import io.wispforest.owo.network.OwoNetChannel;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
+import java.nio.file.Path;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Path;
+import io.wispforest.owo.network.OwoNetChannel;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.item.Item;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Identifier;
 
 public class Constants {
 	// General
 
 	public static final String MOD_ID = "vinurl";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	
+
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
-	
+
 	public static final Identifier PLACEHOLDER_SOUND_ID = Identifier.of(MOD_ID, "placeholder_sound");
-	
+
 	public static SoundEvent SONG;
-	
+
 	public static Item CUSTOM_RECORD;
 	public static Item CUSTOM_RECORD_REWRITABLE;
 

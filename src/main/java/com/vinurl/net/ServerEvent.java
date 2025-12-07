@@ -1,5 +1,16 @@
 package com.vinurl.net;
 
+import static com.vinurl.util.Constants.CUSTOM_RECORD;
+import static com.vinurl.util.Constants.CUSTOM_RECORD_REWRITABLE;
+import static com.vinurl.util.Constants.DISC_DURATION_KEY;
+import static com.vinurl.util.Constants.DISC_LOCKED_NBT_KEY;
+import static com.vinurl.util.Constants.DISC_LOOP_NBT_KEY;
+import static com.vinurl.util.Constants.DISC_REWRITABLE_NBT_KEY;
+import static com.vinurl.util.Constants.DISC_URL_NBT_KEY;
+import static com.vinurl.util.Constants.NETWORK_CHANNEL;
+
+import java.net.URI;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -7,10 +18,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
-
-import java.net.URI;
-import static com.vinurl.util.Constants.*;
-
 
 public class ServerEvent {
 	public static final int MAX_URL_LENGTH = 400;
@@ -77,7 +84,7 @@ public class ServerEvent {
 			currentData.putBoolean(DISC_LOOP_NBT_KEY, payload.loop());
 			currentData.putBoolean(DISC_LOCKED_NBT_KEY, !isRewritable || payload.lock());
 			currentData.putBoolean(DISC_REWRITABLE_NBT_KEY, isRewritable);
-			
+
 			singleRecordStack.setNbt(currentData);
 			player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
 
@@ -89,5 +96,6 @@ public class ServerEvent {
 		});
 	}
 
-	public record SetURLRecord(String url, int duration, boolean loop, boolean lock) {}
+	public record SetURLRecord(String url, int duration, boolean loop, boolean lock) {
+	}
 }

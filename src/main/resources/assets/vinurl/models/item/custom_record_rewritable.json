@@ -1,6 +1,6 @@
 {
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "vinurl:item/custom_record_rewritable"
-  }
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "vinurl:item/custom_record_rewritable"
+	}
 }

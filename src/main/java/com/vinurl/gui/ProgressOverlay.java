@@ -1,13 +1,13 @@
 package com.vinurl.gui;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import static com.vinurl.client.VinURLClient.CLIENT;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.vinurl.client.VinURLClient.CLIENT;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 public class ProgressOverlay {
 	private static final int BAR_SIZE = 20;
@@ -15,7 +15,7 @@ public class ProgressOverlay {
 	private static final LinkedHashMap<String, ProgressEntry> progressQueue = new LinkedHashMap<>();
 
 	public static void set(String id, int progressPercent) {
-		if(progressQueue.put(id, new ProgressEntry(progressPercent)) == null) {
+		if (progressQueue.put(id, new ProgressEntry(progressPercent)) == null) {
 			batchSize++;
 		}
 	}
@@ -31,7 +31,9 @@ public class ProgressOverlay {
 	}
 
 	public static void render(DrawContext context) {
-		if (progressQueue.isEmpty()) {return;}
+		if (progressQueue.isEmpty()) {
+			return;
+		}
 
 		long now = System.currentTimeMillis();
 		Map.Entry<String, ProgressEntry> firstEntry = progressQueue.entrySet().iterator().next();
@@ -44,22 +46,20 @@ public class ProgressOverlay {
 		}
 
 		Text progress = switch (entry.state) {
-			case INTERRUPTED ->
-				Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
-					.append(createProgressText(20, Formatting.RED));
-			case TRANSCODING -> {
-				int animationStep = (int) ((now - entry.stateChangeTime) / 100) % BAR_SIZE;
-				yield Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
-					.append(createProgressText(animationStep, Formatting.GRAY))
-					.append(createProgressText(1, Formatting.BLUE))
+		case INTERRUPTED -> Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
+				.append(createProgressText(20, Formatting.RED));
+		case TRANSCODING -> {
+			int animationStep = (int) ((now - entry.stateChangeTime) / 100) % BAR_SIZE;
+			yield Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
+					.append(createProgressText(animationStep, Formatting.GRAY)).append(createProgressText(1, Formatting.BLUE))
 					.append(createProgressText(BAR_SIZE - 1 - animationStep, Formatting.GRAY));
-			}
-			default -> {
-				int progressBars = BAR_SIZE * entry.progress / 100;
-				yield Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
+		}
+		default -> {
+			int progressBars = BAR_SIZE * entry.progress / 100;
+			yield Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
 					.append(createProgressText(progressBars, Formatting.GREEN))
 					.append(createProgressText(BAR_SIZE - progressBars, Formatting.GRAY));
-			}
+		}
 		};
 
 		renderText(context, Text.literal(entry.state.toString()), 72);
@@ -72,7 +72,7 @@ public class ProgressOverlay {
 
 	private static void renderText(DrawContext context, Text text, int offset) {
 		context.drawTextWithShadow(CLIENT.textRenderer, text,
-			(CLIENT.getWindow().getScaledWidth() - CLIENT.textRenderer.getWidth(text)) / 2,
-			CLIENT.getWindow().getScaledHeight() - offset, 0xFFFFFF);
+				(CLIENT.getWindow().getScaledWidth() - CLIENT.textRenderer.getWidth(text)) / 2,
+				CLIENT.getWindow().getScaledHeight() - offset, 0xFFFFFF);
 	}
 }
