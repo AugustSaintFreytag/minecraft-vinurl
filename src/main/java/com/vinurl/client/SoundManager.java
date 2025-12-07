@@ -1,14 +1,8 @@
 package com.vinurl.client;
 
-import com.jcraft.jorbis.JOrbisException;
-import com.jcraft.jorbis.VorbisFile;
-import com.vinurl.exe.Executable;
-import com.vinurl.gui.ProgressOverlay;
-import com.vinurl.util.MusicDescriptionFormatter;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.Vec3d;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
+import static com.vinurl.client.VinURLClient.CLIENT;
+import static com.vinurl.util.Constants.LOGGER;
+import static com.vinurl.util.Constants.VINURLPATH;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,9 +12,17 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-import static com.vinurl.client.VinURLClient.CLIENT;
-import static com.vinurl.util.Constants.LOGGER;
-import static com.vinurl.util.Constants.VINURLPATH;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
+
+import com.jcraft.jorbis.JOrbisException;
+import com.jcraft.jorbis.VorbisFile;
+import com.vinurl.exe.Executable;
+import com.vinurl.gui.ProgressOverlay;
+import com.vinurl.util.MusicDescriptionFormatter;
+
+import net.minecraft.text.Text;
+import net.minecraft.util.math.Vec3d;
 
 public class SoundManager {
 	// Configuration
@@ -37,31 +39,33 @@ public class SoundManager {
 		if (CLIENT.player == null) {
 			return;
 		}
+
 		ProgressOverlay.set(fileName, 0);
 
-		Executable.YT_DLP.executeCommand(fileName + "/download", url, "-x", "-q", "--progress", "--add-metadata", "--no-playlist",
-				"--progress-template", "PROGRESS: %(progress._percent)d", "--newline", "--break-match-filter",
+		var postProcessorArguments = getPostProcessorArguments();
+		var arguments = new String[] { url, "-x", "-q", "--progress", "--add-metadata", "--no-playlist", "--progress-template",
+				"PROGRESS: %(progress._percent)d", "--newline", "--break-match-filter",
 				"ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus", "--audio-format", "vorbis", "--audio-quality",
-				VinURLClient.CONFIG.audioBitrate().getValue(), "--postprocessor-args",
-				"ffmpeg:-af 'highpass=f=120, lowpass=f=9500, acompressor=threshold=-12dB:ratio=2.5:attack=10:release=200, acrusher=bits=10:mix=0.3, vibrato=f=4:d=0.003' -ac 1 -c:a libvorbis -q:a 3",
-				"-P", AUDIO_DIRECTORY.toString(), "--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(), "-o", fileName + ".%(ext)s")
-				.subscribe("main").onOutput(line -> {
-					String type = line.substring(0, line.indexOf(':') + 1);
-					String message = line.substring(type.length()).trim();
+				VinURLClient.CONFIG.audioBitrate().getValue(), postProcessorArguments[0], postProcessorArguments[1], "-P",
+				AUDIO_DIRECTORY.toString(), "--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(), "-o", fileName + ".%(ext)s" };
 
-					switch (type) {
-					case "PROGRESS:" -> ProgressOverlay.set(fileName, Integer.parseInt(message));
-					case "WARNING:" -> LOGGER.warn(message);
-					case "ERROR:" -> LOGGER.error(message);
-					default -> LOGGER.info(line);
-					}
-				}).onError(error -> {
-					ProgressOverlay.stopFailed(fileName);
-					deleteSound(fileName);
-				}).onComplete(() -> {
-					ProgressOverlay.stop(fileName);
-					descriptionToCache(fileName);
-				}).start();
+		Executable.YT_DLP.executeCommand(fileName + "/download", arguments).subscribe("main").onOutput(line -> {
+			String type = line.substring(0, line.indexOf(':') + 1);
+			String message = line.substring(type.length()).trim();
+
+			switch (type) {
+			case "PROGRESS:" -> ProgressOverlay.set(fileName, Integer.parseInt(message));
+			case "WARNING:" -> LOGGER.warn(message);
+			case "ERROR:" -> LOGGER.error(message);
+			default -> LOGGER.info(line);
+			}
+		}).onError(error -> {
+			ProgressOverlay.stopFailed(fileName);
+			deleteSound(fileName);
+		}).onComplete(() -> {
+			ProgressOverlay.stop(fileName);
+			descriptionToCache(fileName);
+		}).start();
 	}
 
 	public static void deleteSound(String fileName) {
@@ -121,6 +125,14 @@ public class SoundManager {
 				}
 			}
 		}
+	}
+
+	private static String[] getPostProcessorArguments() {
+		if (VinURLClient.CONFIG.degradeAudioQuality) {
+			return new String[] {"--postprocessor-args", "ffmpeg:-af 'highpass=f=120, lowpass=f=9500, acompressor=threshold=-12dB:ratio=2.5:attack=10:release=200, acrusher=bits=10:mix=0.2, vibrato=f=4:d=0.003' -ac 1 -c:a libvorbis -q:a 3"};
+		}
+
+		return new String[] {"", ""}
 	}
 
 	public static String descriptionToCache(String fileName) {

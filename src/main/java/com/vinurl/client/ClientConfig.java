@@ -50,4 +50,6 @@ public class ClientConfig {
 			return value;
 		}
 	}
+
+	public boolean degradeAudioQuality = true;
 }
