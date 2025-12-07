@@ -23,10 +23,10 @@ public class Constants {
 	
 	public static final Identifier PLACEHOLDER_SOUND_ID = Identifier.of(MOD_ID, "placeholder_sound");
 	
-	public static final SoundEvent SONG = Registry.register(Registries.SOUND_EVENT, PLACEHOLDER_SOUND_ID, SoundEvent.of(PLACEHOLDER_SOUND_ID));
+	public static SoundEvent SONG;
 	
-	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "custom_record"), new VinURLDisc(false));
-	public static final Item CUSTOM_RECORD_REWRITABLE = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "custom_record_rewritable"), new VinURLDisc(true));
+	public static Item CUSTOM_RECORD;
+	public static Item CUSTOM_RECORD_REWRITABLE;
 
 	// Networking
 
