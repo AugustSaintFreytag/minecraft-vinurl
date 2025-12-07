@@ -20,9 +20,11 @@ import java.util.List;
 import static com.vinurl.util.Constants.*;
 
 public class VinURLDisc extends MusicDiscItem {
+	private final boolean rewritable;
 
 	public VinURLDisc(boolean isRewritable) {
 		super(15, SONG, new FabricItemSettings().maxCount(1).rarity(isRewritable ? Rarity.UNCOMMON : Rarity.RARE), 3600);
+		this.rewritable = isRewritable;
 	}
 
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
@@ -31,7 +33,12 @@ public class VinURLDisc extends MusicDiscItem {
 		if (!world.isClient) {
 			NbtCompound nbt = stack.getOrCreateNbt();
 			if (!nbt.getBoolean(DISC_LOCKED_NBT_KEY)) {
-				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(nbt.getString(DISC_URL_NBT_KEY), nbt.getInt(DISC_DURATION_KEY), nbt.getBoolean(DISC_LOOP_NBT_KEY)));
+				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(
+					nbt.getString(DISC_URL_NBT_KEY),
+					nbt.getInt(DISC_DURATION_KEY),
+					nbt.getBoolean(DISC_LOOP_NBT_KEY),
+					rewritable
+				));
 			} else {
 				player.sendMessage(Text.translatable("text.vinurl.custom_record.locked.tooltip"), true);
 			}

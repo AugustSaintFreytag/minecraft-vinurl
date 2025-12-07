@@ -85,7 +85,7 @@ public class ClientEvent {
 
 		// Client event to open record ui
 		NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
-			context.runtime().setScreen(new URLScreen(payload.url(), payload.duration(), payload.loop()));
+			context.runtime().setScreen(new URLScreen(payload.url(), payload.duration(), payload.loop(), payload.rewritable()));
 		});
 	}
 
@@ -93,5 +93,5 @@ public class ClientEvent {
 
 	public record StopSoundRecord(BlockPos position, String url, boolean canceled) {}
 
-	public record GUIRecord(String url, int duration, boolean loop) {}
+	public record GUIRecord(String url, int duration, boolean loop, boolean rewritable) {}
 }

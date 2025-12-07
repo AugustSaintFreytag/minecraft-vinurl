@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static com.vinurl.util.Constants.CUSTOM_RECORD;
+import static com.vinurl.util.Constants.CUSTOM_RECORD_REWRITABLE;
 import static com.vinurl.util.Constants.DISC_DURATION_KEY;
 
 @Mixin(JukeboxBlockEntity.class)
@@ -37,33 +38,37 @@ public abstract class JukeboxMixin extends BlockEntity implements SingleStackInv
 
 	@Inject(at = @At("HEAD"), method = "removeStack")
 	public void stopPlaying(int slot, int amount, CallbackInfoReturnable<ItemStack> cir) {
-		if (getStack().getItem() == CUSTOM_RECORD) {
+		if (isVinURLRecord()) {
 			VinURLSound.stop(world, getStack(), getPos(), false);
 		}
 	}
 
 	@Inject(at = @At("TAIL"), method = "setStack")
 	public void startPlaying(int slot, ItemStack stack, CallbackInfo ci) {
-		if (getStack().getItem() == CUSTOM_RECORD) {
+		if (isVinURLRecord()) {
 			VinURLSound.play(world, getStack(), getPos());
 		}
 	}
 
 	@Inject(at = @At("HEAD"), method = "dropRecord")
 	public void cancelDownload(CallbackInfo ci) {
-		if (getStack().getItem() == CUSTOM_RECORD) {
+		if (isVinURLRecord()) {
 			VinURLSound.stop(world, getStack(), getPos(), true);
 		}
 	}
 
 	@Inject(at = @At("HEAD"), method = "tick(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V")
 	private void tick(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
-		if (getStack().getItem() == CUSTOM_RECORD) {
+		if (isVinURLRecord()) {
 			NbtCompound nbt = getStack().getOrCreateNbt();
 			if (tickCount > recordStartTick + nbt.getInt(DISC_DURATION_KEY) * 20L) {
 				stopPlaying();
 				VinURLSound.stop(world, getStack(), pos, false);
 			}
 		}
+	}
+
+	private boolean isVinURLRecord() {
+		return getStack().isOf(CUSTOM_RECORD) || getStack().isOf(CUSTOM_RECORD_REWRITABLE);
 	}
 }
