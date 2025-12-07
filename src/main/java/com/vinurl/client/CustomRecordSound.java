@@ -21,10 +21,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Vec3d;
 
-public class FileSound extends AbstractSoundInstance {
+public class CustomRecordSound extends AbstractSoundInstance {
 	public final String fileName;
 
-	public FileSound(String fileName, Vec3d position, boolean loop) {
+	public CustomRecordSound(String fileName, Vec3d position, boolean loop) {
 		super(VinURLSounds.CUSTOM_MUSIC, SoundCategory.RECORDS, SoundInstance.createRandom());
 		this.fileName = fileName;
 		this.repeat = loop;

@@ -11,12 +11,12 @@ public class SoundManager {
 
 	// State
 
-	private static final ConcurrentHashMap<Vec3d, FileSound> playingSounds = new ConcurrentHashMap<>();
+	private static final ConcurrentHashMap<Vec3d, CustomRecordSound> playingSounds = new ConcurrentHashMap<>();
 
 	// Playback
 
 	public static void playSound(Vec3d position) {
-		FileSound fileSound = playingSounds.get(position);
+		CustomRecordSound fileSound = playingSounds.get(position);
 		if (fileSound != null) {
 			CLIENT.getSoundManager().play(fileSound);
 			CLIENT.inGameHud.setRecordPlayingOverlay(Text.literal(SoundDescriptionManager.getDescription(fileSound.fileName)));
@@ -28,6 +28,6 @@ public class SoundManager {
 	}
 
 	public static void addSound(String fileName, Vec3d position, boolean loop) {
-		playingSounds.put(position, new FileSound(fileName, position, loop));
+		playingSounds.put(position, new CustomRecordSound(fileName, position, loop));
 	}
 }
