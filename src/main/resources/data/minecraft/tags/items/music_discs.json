@@ -1,5 +1,6 @@
 {
   "values": [
-    "vinurl:custom_record"
+    "vinurl:custom_record",
+    "vinurl:custom_record_rewritable"
   ]
 }

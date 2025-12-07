@@ -9,8 +9,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
 import java.net.URI;
-import java.util.stream.Stream;
-
 import static com.vinurl.util.Constants.*;
 
 
@@ -25,14 +23,27 @@ public class ServerEvent {
 		// Server event handler for setting the URL on the custom record
 		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (payload, context) -> {
 			PlayerEntity player = context.player();
-			ItemStack stack = Stream.of(Hand.values())
-				.map(player::getStackInHand)
-				.filter(currentStack -> currentStack.getItem() == CUSTOM_RECORD)
-				.findFirst()
-				.orElse(null);
+			Hand stackHand = null;
+			ItemStack stack = ItemStack.EMPTY;
+			for (Hand hand : Hand.values()) {
+				ItemStack currentStack = player.getStackInHand(hand);
+				if (currentStack.isOf(CUSTOM_RECORD) || currentStack.isOf(CUSTOM_RECORD_REWRITABLE)) {
+					stackHand = hand;
+					stack = currentStack;
+					break;
+				}
+			}
 
-			if (stack == null) {
+			if (stackHand == null || stack.isEmpty()) {
 				player.sendMessage(Text.literal("VinURL-Disc needed in hand!"), true);
+				return;
+			}
+
+			boolean isRewritable = stack.isOf(CUSTOM_RECORD_REWRITABLE);
+			NbtCompound currentData = stack.getOrCreateNbt();
+
+			if (currentData.getBoolean(DISC_LOCKED_NBT_KEY)) {
+				player.sendMessage(Text.translatable("text.vinurl.custom_record.locked.tooltip"), true);
 				return;
 			}
 
@@ -51,14 +62,30 @@ public class ServerEvent {
 				return;
 			}
 
+			ItemStack singleRecordStack = stack;
+			ItemStack remainingStack = ItemStack.EMPTY;
+
+			if (stack.getCount() > 1) {
+				singleRecordStack = stack.split(1);
+				remainingStack = stack;
+				player.setStackInHand(stackHand, singleRecordStack);
+			}
+
+			currentData = singleRecordStack.getOrCreateNbt();
+			currentData.putString(DISC_URL_NBT_KEY, url);
+			currentData.putInt(DISC_DURATION_KEY, payload.duration());
+			currentData.putBoolean(DISC_LOOP_NBT_KEY, payload.loop());
+			currentData.putBoolean(DISC_LOCKED_NBT_KEY, !isRewritable || payload.lock());
+			currentData.putBoolean(DISC_REWRITABLE_NBT_KEY, isRewritable);
+			
+			singleRecordStack.setNbt(currentData);
 			player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
 
-			stack.setNbt(new NbtCompound() {{
-				putString(URL_KEY, url);
-				putInt(DURATION_KEY, payload.duration());
-				putBoolean(LOOP_KEY, payload.loop());
-				putBoolean(LOCK_KEY, payload.lock());
-			}});
+			if (!remainingStack.isEmpty()) {
+				if (!player.getInventory().insertStack(remainingStack)) {
+					player.dropItem(remainingStack, false);
+				}
+			}
 		});
 	}
 

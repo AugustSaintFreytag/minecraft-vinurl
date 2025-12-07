@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "rqr",
+    "qDq",
     "ddd",
     "CCC"
   ],
@@ -13,14 +13,14 @@
     "d": {
       "item": "minecraft:black_dye"
     },
-    "r": {
-      "item": "minecraft:redstone"
-    },
     "q": {
       "item": "create:polished_rose_quartz"
+    },
+    "D": {
+      "item": "minecraft:diamond"
     }
   },
   "result": {
-    "item": "vinurl:custom_record"
+    "item": "vinurl:custom_record_rewritable"
   }
 }

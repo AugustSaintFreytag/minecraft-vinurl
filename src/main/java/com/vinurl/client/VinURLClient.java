@@ -32,12 +32,20 @@ public class VinURLClient implements ClientModInitializer {
 		ClientEvent.register();
 
 		ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
-			if (stack.getItem() != CUSTOM_RECORD) {return;}
+			if (!stack.isOf(CUSTOM_RECORD) && !stack.isOf(CUSTOM_RECORD_REWRITABLE)) {
+				return;
+			}
 
-			lines.remove(Text.translatable("item.vinurl.custom_record.desc").formatted(Formatting.GRAY));
+			if (stack.isOf(CUSTOM_RECORD)) {
+				lines.remove(Text.translatable("item.vinurl.custom_record.desc").formatted(Formatting.GRAY));
+			}
+
+			if (stack.isOf(CUSTOM_RECORD_REWRITABLE)) {
+				lines.remove(Text.translatable("item.vinurl.custom_record_rewritable.desc").formatted(Formatting.GRAY));	
+			}
 
 			if (CONFIG.showDescription()) {
-				String fileName = SoundManager.hashURL(stack.getOrCreateNbt().getString(URL_KEY));
+				String fileName = SoundManager.hashURL(stack.getOrCreateNbt().getString(DISC_URL_NBT_KEY));
 
 				if (!fileName.isEmpty()) {
 					lines.add(Text.literal(SoundManager.getDescription(fileName)).formatted(Formatting.GRAY));

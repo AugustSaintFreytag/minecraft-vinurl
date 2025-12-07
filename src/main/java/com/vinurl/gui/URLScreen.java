@@ -25,6 +25,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	private boolean sliderDragged;
 	private boolean simulate;
 	private int duration;
+	private final boolean rewritable;
 
 	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
@@ -51,11 +52,14 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
-	public URLScreen(String defaultURL, int defaultDuration, boolean defaultLoop) {
+	public URLScreen(String defaultURL, int defaultDuration, boolean defaultLoop, boolean rewritable) {
 		super(StackLayout.class, DataSource.asset(Identifier.of(MOD_ID, "disc_url_screen")));
+
 		this.url = defaultURL;
 		this.loop = defaultLoop;
 		this.duration = defaultDuration;
+		this.rewritable = rewritable;
+		this.lock = !rewritable;
 	}
 
 	@Override
@@ -64,7 +68,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		TextBoxComponent urlTextbox = stackLayout.childById(TextBoxComponent.class, "url_textbox");
 		SlimSliderComponent durationSlider = stackLayout.childById(SlimSliderComponent.class, "duration_slider");
 		ButtonComponent loopButton = stackLayout.childById(ButtonComponent.class, "loop_button");
-		ButtonComponent lockButton = stackLayout.childById(ButtonComponent.class, "lock_button");
+		// ButtonComponent lockButton = stackLayout.childById(ButtonComponent.class, "lock_button");
 		ButtonComponent simulateButton = stackLayout.childById(ButtonComponent.class, "simulate_button");
 		TextureComponent textFieldTexture = stackLayout.childById(TextureComponent.class, "text_field_disabled");
 
@@ -72,12 +76,14 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		durationSlider.tooltipSupplier(slider -> Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)));
 		durationSlider.mouseDrag().subscribe((mouseX, mouseY, deltaX, deltaY, button) -> {
 			sliderDragged = true;
-			lockButton.active = loopButton.active = simulateButton.active = false;
+			// lockButton.active = false;
+			loopButton.active = simulateButton.active = false;
 			return true;
 		});
 		durationSlider.mouseUp().subscribe((mouseX, mouseY, button) -> {
 			sliderDragged = false;
-			lockButton.active = loopButton.active = simulateButton.active = true;
+			// lockButton.active = rewritable;
+			loopButton.active = simulateButton.active = true;
 			return true;
 		});
 		durationSlider.onChanged().subscribe(newValue -> {duration = (int) newValue;});
@@ -89,8 +95,13 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		loopButton.renderer(LOOP_BUTTON_TEXTURE);
 		loopButton.onPress(button -> loop = !loop);
 
-		lockButton.renderer(LOCK_BUTTON_TEXTURE);
-		lockButton.onPress(button -> lock = !lock);
+		// lockButton.active = rewritable;
+		// lockButton.renderer(LOCK_BUTTON_TEXTURE);
+		// lockButton.onPress(button -> {
+		// 	if (rewritable) {
+		// 		lock = !lock;
+		// 	}
+		// });
 
 		simulateButton.renderer(SIMULATE_BUTTON_TEXTURE);
 		simulateButton.onPress(button -> {
@@ -118,7 +129,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 
 		urlTextbox.onChanged().subscribe(text -> placeholderLabel.text(Text.literal((url = text).isEmpty() ? "URL" : "")));
 		urlTextbox.text(url);
-		urlTextbox.focusLost().subscribe(() -> textFieldTexture.visibleArea(PositionedRectangle.of(0, 0, 110, 16)));
+		urlTextbox.focusLost().subscribe(() -> textFieldTexture.visibleArea(PositionedRectangle.of(0, 0, 131, 16)));
 		urlTextbox.focusGained().subscribe((source) -> textFieldTexture.visibleArea(PositionedRectangle.of(0, 0, 0, 0)));
 	}
 
@@ -128,6 +139,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(url, duration, loop, lock));
 			CLIENT.setScreen(null);
 		}
+
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 

@@ -1,6 +1,8 @@
 {
   "item.vinurl.custom_record": "Custom Music Disc",
-  "item.vinurl.custom_record.desc": "No Song",
+  "item.vinurl.custom_record_rewritable": "Rewritable Music Disc",
+  "item.vinurl.custom_record.desc": "Single-Pressable Disc",
+  "item.vinurl.custom_record_rewritable.desc": "Multi-Pressable Disc",
   "text.config.VinURLConfig.option.updatesOnStartup": "Auto Updates",
   "text.config.VinURLConfig.option.updatesOnStartup.tooltip": "Update checks on startup for YT-DLP, FFmpeg, FFprobe",
   "text.config.VinURLConfig.option.downloadEnabled": "Download Custom Music",
@@ -16,6 +18,7 @@
   "text.config.VinURLConfig.title": "VinURL Config",
   "text.config.VinURLConfig.section.general": "General",
   "text.config.VinURLConfig.section.audioSettings": "Audio Settings",
+  "text.vinurl.custom_record.locked.tooltip": "Locked 🔒",
   "category.vinurl": "VinURL",
   "key.vinurl.accept": "Add Provider"
 }
