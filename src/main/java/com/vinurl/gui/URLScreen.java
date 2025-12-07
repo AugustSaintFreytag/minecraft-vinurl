@@ -26,6 +26,12 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class URLScreen extends BaseUIModelScreen<StackLayout> {
+	// Configuration
+
+	private static final int EXTRA_MUSIC_DURATION_SECONDS = 3;
+
+	// State
+
 	private String url;
 	private boolean loop;
 	private boolean lock;
@@ -33,6 +39,8 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	private boolean simulate;
 	private int duration;
 	private final boolean rewritable;
+
+	// Components
 
 	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
@@ -53,6 +61,8 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
+	// Init
+
 	public URLScreen(String defaultURL, int defaultDuration, boolean defaultLoop, boolean rewritable) {
 		super(StackLayout.class, DataSource.asset(Identifier.of(MOD_ID, "disc_url_screen")));
 
@@ -62,6 +72,8 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		this.rewritable = rewritable;
 		this.lock = !rewritable;
 	}
+
+	// Build
 
 	@Override
 	protected void build(StackLayout stackLayout) {
@@ -111,20 +123,30 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 			if (simulate) {
 				return;
 			}
+
 			simulate = true;
 			button.tooltip(Text.literal("Calculating..."));
+
 			Executable.YT_DLP
 					.executeCommand(SoundManager.hashURL(url) + "/duration", url, "--print", "DURATION: %(duration)d", "--no-playlist")
 					.subscribe("duration").onOutput(line -> {
 						String type = line.substring(0, line.indexOf(':') + 1);
 						String message = line.substring(type.length()).trim();
 
-						switch (type) {
-						case "DURATION:" -> durationSlider.value(Integer.parseInt(message));
-						case "WARNING:" -> LOGGER.warn(message);
-						case "ERROR:" -> LOGGER.error(message);
-						default -> LOGGER.info(line);
+						if (type == "DURATION:") {
+							int duration = Integer.parseInt(message) + EXTRA_MUSIC_DURATION_SECONDS;
+							durationSlider.value(duration);
+
+							return;
 						}
+
+						if (type == "WARNING:") {
+							LOGGER.warn(message);
+							return;
+						}
+
+						LOGGER.error(message);
+						return;
 					}).onError(error -> {
 						button.tooltip(Text.literal("Automatic Duration"));
 						simulate = false;
