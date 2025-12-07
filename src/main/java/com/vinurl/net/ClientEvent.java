@@ -6,6 +6,7 @@ import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 import java.util.List;
 
 import com.vinurl.client.KeyListener;
+import com.vinurl.client.SoundDownloadManager;
 import com.vinurl.client.SoundManager;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.URLScreen;
@@ -34,22 +35,22 @@ public class ClientEvent {
 			SoundManager.addSound(fileName, position, loop);
 
 			if (Executable.YT_DLP.isProcessRunning(fileName + "/download")) {
-				SoundManager.queueSound(fileName, position);
+				SoundDownloadManager.queueSound(fileName, position);
 				return;
 			}
 
-			if (SoundManager.getAudioFile(fileName).exists()) {
+			if (SoundDownloadManager.getAudioFile(fileName).exists()) {
 				SoundManager.playSound(position);
 				return;
 			}
 
 			if (CONFIG.downloadEnabled()) {
 				List<String> whitelist = CONFIG.urlWhitelist();
-				String baseURL = SoundManager.getBaseURL(url);
+				String baseURL = SoundDownloadManager.getBaseURL(url);
 
 				if (whitelist.stream().anyMatch(url::startsWith)) {
-					SoundManager.downloadSound(url, fileName);
-					SoundManager.queueSound(fileName, position);
+					SoundDownloadManager.downloadSound(url, fileName);
+					SoundDownloadManager.queueSound(fileName, position);
 					return;
 				}
 
@@ -60,8 +61,8 @@ public class ClientEvent {
 					if (confirmed) {
 						whitelist.add(baseURL);
 						CONFIG.save();
-						SoundManager.downloadSound(url, fileName);
-						SoundManager.queueSound(fileName, position);
+						SoundDownloadManager.downloadSound(url, fileName);
+						SoundDownloadManager.queueSound(fileName, position);
 					}
 				});
 			}

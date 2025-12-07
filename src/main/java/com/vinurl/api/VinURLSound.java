@@ -19,7 +19,9 @@ public class VinURLSound {
 		if (world == null || world.isClient) {
 			return;
 		}
+
 		NbtCompound nbt = stack.getOrCreateNbt();
+
 		for (PlayerEntity player : world.getPlayers()) {
 			if (player.getPos().distanceTo(position.toCenterPos()) <= JUKEBOX_RANGE) {
 				NETWORK_CHANNEL.serverHandle(player).send(

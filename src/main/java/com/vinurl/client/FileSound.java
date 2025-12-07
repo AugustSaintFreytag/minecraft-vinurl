@@ -1,6 +1,6 @@
 package com.vinurl.client;
 
-import static com.vinurl.client.SoundManager.getAudioFile;
+import static com.vinurl.client.SoundDownloadManager.getAudioFile;
 import static com.vinurl.util.Constants.PLACEHOLDER_SOUND_ID;
 
 import java.io.FileInputStream;

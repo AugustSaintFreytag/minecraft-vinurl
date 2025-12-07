@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 import org.apache.commons.io.FileUtils;
 
 import com.mojang.brigadier.context.CommandContext;
-import com.vinurl.client.SoundManager;
+import com.vinurl.client.SoundDownloadManager;
 import com.vinurl.exe.Executable;
 
 import io.wispforest.owo.config.ui.ConfigScreen;
@@ -31,7 +31,7 @@ public class Commands {
 
 	private static int deleteAudioFiles(CommandContext<FabricClientCommandSource> ctx) {
 		try {
-			FileUtils.deleteDirectory(SoundManager.AUDIO_DIRECTORY.toFile());
+			FileUtils.deleteDirectory(SoundDownloadManager.AUDIO_DIRECTORY.toFile());
 			ctx.getSource().sendFeedback(Text.literal("Deleted all audio files"));
 			return 1;
 		} catch (IOException e) {
