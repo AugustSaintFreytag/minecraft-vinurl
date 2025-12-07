@@ -4,6 +4,7 @@ import com.jcraft.jorbis.JOrbisException;
 import com.jcraft.jorbis.VorbisFile;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.ProgressOverlay;
+import com.vinurl.util.MusicDescriptionFormatter;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -22,9 +23,15 @@ import static com.vinurl.util.Constants.LOGGER;
 import static com.vinurl.util.Constants.VINURLPATH;
 
 public class SoundManager {
+	// Configuration
+
 	public static final Path AUDIO_DIRECTORY = VINURLPATH.resolve("downloads");
+	public static final boolean ABBREVIATE_AUDIO_TITLES = false;
+	
 	private static final ConcurrentHashMap<Vec3d, FileSound> playingSounds = new ConcurrentHashMap<>();
 	private static final ConcurrentHashMap<String, String> descriptionCache = new ConcurrentHashMap<>();
+
+	// Download
 
 	public static void downloadSound(String url, String fileName) {
 		if (CLIENT.player == null) {return;}
@@ -36,7 +43,7 @@ public class SoundManager {
 			"--progress-template", "PROGRESS: %(progress._percent)d", "--newline",
 			"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
 			"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
-			"--postprocessor-args", "ffmpeg:-ac 1 -c:a libvorbis",
+			"--postprocessor-args", "ffmpeg:-af 'highpass=f=120, lowpass=f=9500, acompressor=threshold=-12dB:ratio=2.5:attack=10:release=200, acrusher=bits=10:mix=0.3, vibrato=f=4:d=0.003' -ac 1 -c:a libvorbis -q:a 3",
 			"-P", AUDIO_DIRECTORY.toString(), "--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
 			"-o", fileName + ".%(ext)s"
 		).subscribe("main")
@@ -124,9 +131,15 @@ public class SoundManager {
 	public static String descriptionToCache(String fileName) {
 		descriptionCache.remove(fileName);
 		return descriptionCache.compute(fileName, (k, v) -> {
-			String artist = getOggAttribute(fileName, "artist");
-			String title = getOggAttribute(fileName, "title");
-			return (artist + " - " + title).replaceAll("[︀-️]", "");
+			var artist = getOggAttribute(fileName, "artist");
+			var title = getOggAttribute(fileName, "title");
+			
+			if (ABBREVIATE_AUDIO_TITLES) {
+				var maxLength = MusicDescriptionFormatter.DEFAULT_MAX_LENGTH;
+				return MusicDescriptionFormatter.abbreviateNameFromComponents(artist, title, maxLength);
+			}
+			
+			return title;
 		});
 	}
 
