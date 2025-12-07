@@ -25,7 +25,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 @Mixin(JukeboxBlockEntity.class)
-public abstract class JukeboxMixin extends BlockEntity implements SingleStackInventory, Clearable {
+public abstract class JukeboxBlockEntityMixin extends BlockEntity implements SingleStackInventory, Clearable {
 
 	@Shadow
 	private long tickCount;
@@ -37,7 +37,7 @@ public abstract class JukeboxMixin extends BlockEntity implements SingleStackInv
 	private void stopPlaying() {
 	}
 
-	public JukeboxMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+	public JukeboxBlockEntityMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 	}
 
