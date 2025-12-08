@@ -108,20 +108,24 @@ public enum Executable {
 			if (REPOSITORY_FILE.endsWith(".zip")) {
 				try (ZipInputStream zipInput = new ZipInputStream(inputStream)) {
 					ZipEntry zipEntry = zipInput.getNextEntry();
+
 					while (zipEntry != null) {
 						if (zipEntry.getName().endsWith(FILE_NAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""))) {
 							Files.copy(zipInput, FILE_PATH, StandardCopyOption.REPLACE_EXISTING);
 							break;
 						}
+
 						zipEntry = zipInput.getNextEntry();
 					}
 				}
 			} else {
 				Files.copy(inputStream, FILE_PATH, StandardCopyOption.REPLACE_EXISTING);
 			}
+
 			if (SystemUtils.IS_OS_UNIX) {
 				Runtime.getRuntime().exec(new String[] { "chmod", "+x", FILE_PATH.toString() });
 			}
+
 			return createVersionFile(latestVersion());
 		} catch (Exception e) {
 			return false;

@@ -2,6 +2,7 @@ package com.vinurl.client;
 
 import com.vinurl.VinURL;
 import com.vinurl.VinURLItems;
+import com.vinurl.client.VinURLConfig;
 import com.vinurl.cmd.Commands;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.ProgressOverlay;
@@ -17,7 +18,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class VinURLClient implements ClientModInitializer {
-	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();
+	public static final VinURLConfig CONFIG = VinURLConfig.createAndLoad();
 	public static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	@Override
