@@ -3,7 +3,6 @@ plugins {
 	id "org.moddedmc.wiki.toolkit" version "${plg_moddedmc_wiki}"
 }
 
-var mod_version = file('CHANGELOG.md').text.find(/Version: (.+)/) { _, version -> version }
 version = "${mod_version}+mc${mod_minecraft_version_end}"
 
 base {
