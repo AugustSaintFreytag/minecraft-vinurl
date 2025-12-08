@@ -131,14 +131,14 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 						String type = line.substring(0, line.indexOf(':') + 1);
 						String message = line.substring(type.length()).trim();
 
-						if (type == "DURATION:") {
+						if (type.equals("DURATION:")) {
 							int duration = Integer.parseInt(message) + EXTRA_MUSIC_DURATION_SECONDS;
 							durationSlider.value(duration);
 
 							return;
 						}
 
-						if (type == "WARNING:") {
+						if (type.equals("WARNING:")) {
 							VinURL.LOGGER.warn(message);
 							return;
 						}
