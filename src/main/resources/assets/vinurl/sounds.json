@@ -1,8 +1,8 @@
 {
-	"placeholder_sound": {
+	"placeholder": {
 		"sounds": [
 			{
-				"name": "vinurl:placeholder_sound",
+				"name": "vinurl:placeholder",
 				"attenuation_distance": 64,
 				"stream": true
 			}

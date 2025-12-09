@@ -1,16 +1,15 @@
 package com.vinurl.gui;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
-import static com.vinurl.util.Constants.LOGGER;
-import static com.vinurl.util.Constants.MOD_ID;
-import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 
 import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.vinurl.client.SoundManager;
+import com.vinurl.VinURL;
+import com.vinurl.VinURLNetwork;
+import com.vinurl.client.SoundDescriptionManager;
 import com.vinurl.exe.Executable;
-import com.vinurl.net.ServerEvent;
+import com.vinurl.net.ServerEvents;
 
 import io.wispforest.owo.ui.base.BaseUIModelScreen;
 import io.wispforest.owo.ui.component.ButtonComponent;
@@ -44,27 +43,27 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 
 	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		Identifier texture = !simulate ? (button.active && button.isHovered() ? Identifier.of(MOD_ID, "simulate_button_hovered")
-				: Identifier.of(MOD_ID, "simulate_button")) : Identifier.of(MOD_ID, "simulate_button_disabled");
+		Identifier texture = !simulate ? (button.active && button.isHovered() ? Identifier.of(VinURL.MOD_ID, "simulate_button_hovered")
+				: Identifier.of(VinURL.MOD_ID, "simulate_button")) : Identifier.of(VinURL.MOD_ID, "simulate_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	private final ButtonComponent.Renderer LOOP_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		Identifier texture = loop ? Identifier.of(MOD_ID, "loop_button") : Identifier.of(MOD_ID, "loop_button_disabled");
+		Identifier texture = loop ? Identifier.of(VinURL.MOD_ID, "loop_button") : Identifier.of(VinURL.MOD_ID, "loop_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	private final ButtonComponent.Renderer LOCK_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		Identifier texture = lock ? Identifier.of(MOD_ID, "lock_button") : Identifier.of(MOD_ID, "lock_button_disabled");
+		Identifier texture = lock ? Identifier.of(VinURL.MOD_ID, "lock_button") : Identifier.of(VinURL.MOD_ID, "lock_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	// Init
 
 	public URLScreen(String defaultURL, int defaultDuration, boolean defaultLoop, boolean rewritable) {
-		super(StackLayout.class, DataSource.asset(Identifier.of(MOD_ID, "disc_url_screen")));
+		super(StackLayout.class, DataSource.asset(Identifier.of(VinURL.MOD_ID, "disc_url_screen")));
 
 		this.url = defaultURL;
 		this.loop = defaultLoop;
@@ -127,25 +126,24 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 			simulate = true;
 			button.tooltip(Text.literal("Calculating..."));
 
-			Executable.YT_DLP
-					.executeCommand(SoundManager.hashURL(url) + "/duration", url, "--print", "DURATION: %(duration)d", "--no-playlist")
-					.subscribe("duration").onOutput(line -> {
+			Executable.YT_DLP.executeCommand(SoundDescriptionManager.hashURL(url) + "/duration", url, "--print", "DURATION: %(duration)d",
+					"--no-playlist").subscribe("duration").onOutput(line -> {
 						String type = line.substring(0, line.indexOf(':') + 1);
 						String message = line.substring(type.length()).trim();
 
-						if (type == "DURATION:") {
+						if (type.equals("DURATION:")) {
 							int duration = Integer.parseInt(message) + EXTRA_MUSIC_DURATION_SECONDS;
 							durationSlider.value(duration);
 
 							return;
 						}
 
-						if (type == "WARNING:") {
-							LOGGER.warn(message);
+						if (type.equals("WARNING:")) {
+							VinURL.LOGGER.warn(message);
 							return;
 						}
 
-						LOGGER.error(message);
+						VinURL.LOGGER.error(message);
 						return;
 					}).onError(error -> {
 						button.tooltip(Text.literal("Automatic Duration"));
@@ -165,7 +163,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
-			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(url, duration, loop, lock));
+			VinURLNetwork.NETWORK_CHANNEL.clientHandle().send(new ServerEvents.SetURLRecord(url, duration, loop, lock));
 			CLIENT.setScreen(null);
 		}
 

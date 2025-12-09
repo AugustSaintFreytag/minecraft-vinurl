@@ -1,16 +1,11 @@
 package com.vinurl.items;
 
-import static com.vinurl.util.Constants.DISC_DURATION_KEY;
-import static com.vinurl.util.Constants.DISC_LOCKED_NBT_KEY;
-import static com.vinurl.util.Constants.DISC_LOOP_NBT_KEY;
-import static com.vinurl.util.Constants.DISC_URL_NBT_KEY;
-import static com.vinurl.util.Constants.NETWORK_CHANNEL;
-import static com.vinurl.util.Constants.SONG;
-
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.vinurl.VinURLNetwork;
+import com.vinurl.VinURLSounds;
 import com.vinurl.net.ClientEvent;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -27,12 +22,28 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
 public class VinURLDisc extends MusicDiscItem {
+
+	// NBT
+
+	public static final String DISC_URL_NBT_KEY = "MusicUrl";
+	public static final String DISC_REWRITABLE_NBT_KEY = "Rewritable";
+	public static final String DISC_LOOP_NBT_KEY = "Loop";
+	public static final String DISC_LOCKED_NBT_KEY = "Locked";
+	public static final String DISC_DURATION_KEY = "Duration";
+
+	// State
+
 	private final boolean rewritable;
 
+	// Init
+
 	public VinURLDisc(boolean isRewritable) {
-		super(15, SONG, new FabricItemSettings().maxCount(1).rarity(isRewritable ? Rarity.UNCOMMON : Rarity.RARE), 3600);
+		super(15, VinURLSounds.CUSTOM_MUSIC, new FabricItemSettings().maxCount(1).rarity(isRewritable ? Rarity.UNCOMMON : Rarity.RARE),
+				3600);
 		this.rewritable = isRewritable;
 	}
+
+	// Interaction
 
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);
@@ -40,7 +51,7 @@ public class VinURLDisc extends MusicDiscItem {
 		if (!world.isClient) {
 			NbtCompound nbt = stack.getOrCreateNbt();
 			if (!nbt.getBoolean(DISC_LOCKED_NBT_KEY)) {
-				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(nbt.getString(DISC_URL_NBT_KEY),
+				VinURLNetwork.NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(nbt.getString(DISC_URL_NBT_KEY),
 						nbt.getInt(DISC_DURATION_KEY), nbt.getBoolean(DISC_LOOP_NBT_KEY), rewritable));
 			} else {
 				player.sendMessage(Text.translatable("text.vinurl.custom_record.locked.tooltip"), true);
@@ -49,6 +60,8 @@ public class VinURLDisc extends MusicDiscItem {
 
 		return TypedActionResult.success(stack);
 	}
+
+	// Tooltip
 
 	@Override
 	public void appendTooltip(ItemStack stack, @Nullable

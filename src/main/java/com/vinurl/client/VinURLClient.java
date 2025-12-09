@@ -1,13 +1,12 @@
 package com.vinurl.client;
 
-import static com.vinurl.util.Constants.CUSTOM_RECORD;
-import static com.vinurl.util.Constants.CUSTOM_RECORD_REWRITABLE;
-import static com.vinurl.util.Constants.DISC_URL_NBT_KEY;
-import static com.vinurl.util.Constants.LOGGER;
-
+import com.vinurl.VinURL;
+import com.vinurl.VinURLItems;
+import com.vinurl.client.VinURLConfig;
 import com.vinurl.cmd.Commands;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.ProgressOverlay;
+import com.vinurl.items.VinURLDisc;
 import com.vinurl.net.ClientEvent;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -19,7 +18,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class VinURLClient implements ClientModInitializer {
-	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();
+	public static final VinURLConfig CONFIG = VinURLConfig.createAndLoad();
 	public static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	@Override
@@ -27,7 +26,7 @@ public class VinURLClient implements ClientModInitializer {
 		// Downloads FFmpeg, FFprobe and YT-DLP if they do not exist and checks for updates.
 		for (Executable executable : Executable.values()) {
 			if (!executable.checkForExecutable()) {
-				LOGGER.error("Failed to load executable {}", executable);
+				VinURL.LOGGER.error("Failed to load executable {}", executable);
 			}
 		}
 
@@ -36,23 +35,23 @@ public class VinURLClient implements ClientModInitializer {
 		ClientEvent.register();
 
 		ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
-			if (!stack.isOf(CUSTOM_RECORD) && !stack.isOf(CUSTOM_RECORD_REWRITABLE)) {
+			if (!stack.isOf(VinURLItems.CUSTOM_RECORD) && !stack.isOf(VinURLItems.CUSTOM_RECORD_REWRITABLE)) {
 				return;
 			}
 
-			if (stack.isOf(CUSTOM_RECORD)) {
+			if (stack.isOf(VinURLItems.CUSTOM_RECORD)) {
 				lines.remove(Text.translatable("item.vinurl.custom_record.desc").formatted(Formatting.GRAY));
 			}
 
-			if (stack.isOf(CUSTOM_RECORD_REWRITABLE)) {
+			if (stack.isOf(VinURLItems.CUSTOM_RECORD_REWRITABLE)) {
 				lines.remove(Text.translatable("item.vinurl.custom_record_rewritable.desc").formatted(Formatting.GRAY));
 			}
 
 			if (CONFIG.showDescription()) {
-				String fileName = SoundManager.hashURL(stack.getOrCreateNbt().getString(DISC_URL_NBT_KEY));
+				String fileName = SoundDescriptionManager.hashURL(stack.getOrCreateNbt().getString(VinURLDisc.DISC_URL_NBT_KEY));
 
 				if (!fileName.isEmpty()) {
-					lines.add(Text.literal(SoundManager.getDescription(fileName)).formatted(Formatting.GRAY));
+					lines.add(Text.literal(SoundDescriptionManager.getDescription(fileName)).formatted(Formatting.GRAY));
 				}
 			}
 		});

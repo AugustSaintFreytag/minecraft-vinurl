@@ -10,25 +10,18 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class ProgressOverlay {
+	// Configuration
+
+	private static final int OFFSET_Y = 102;
+	private static final int SPACING_Y = 10;
+
 	private static final int BAR_SIZE = 20;
+
 	private static int batchSize = 0;
+
 	private static final LinkedHashMap<String, ProgressEntry> progressQueue = new LinkedHashMap<>();
 
-	public static void set(String id, int progressPercent) {
-		if (progressQueue.put(id, new ProgressEntry(progressPercent)) == null) {
-			batchSize++;
-		}
-	}
-
-	public static void stop(String id) {
-		if (progressQueue.remove(id) != null && progressQueue.isEmpty()) {
-			batchSize = 0;
-		}
-	}
-
-	public static void stopFailed(String id) {
-		progressQueue.put(id, new ProgressEntry(ProgressEntry.ERROR));
-	}
+	// Render
 
 	public static void render(DrawContext context) {
 		if (progressQueue.isEmpty()) {
@@ -62,17 +55,37 @@ public class ProgressOverlay {
 		}
 		};
 
-		renderText(context, Text.literal(entry.state.toString()), 72);
-		renderText(context, progress, 62);
-	}
-
-	private static Text createProgressText(int count, Formatting formatting) {
-		return Text.literal("|".repeat(count)).formatted(formatting);
+		renderText(context, Text.literal(entry.state.toString()), OFFSET_Y);
+		renderText(context, progress, OFFSET_Y - SPACING_Y);
 	}
 
 	private static void renderText(DrawContext context, Text text, int offset) {
 		context.drawTextWithShadow(CLIENT.textRenderer, text,
 				(CLIENT.getWindow().getScaledWidth() - CLIENT.textRenderer.getWidth(text)) / 2,
 				CLIENT.getWindow().getScaledHeight() - offset, 0xFFFFFF);
+	}
+
+	// Update
+
+	public static void set(String id, int progressPercent) {
+		if (progressQueue.put(id, new ProgressEntry(progressPercent)) == null) {
+			batchSize++;
+		}
+	}
+
+	public static void stop(String id) {
+		if (progressQueue.remove(id) != null && progressQueue.isEmpty()) {
+			batchSize = 0;
+		}
+	}
+
+	public static void stopFailed(String id) {
+		progressQueue.put(id, new ProgressEntry(ProgressEntry.ERROR));
+	}
+
+	// Make
+
+	private static Text createProgressText(int count, Formatting formatting) {
+		return Text.literal("|".repeat(count)).formatted(formatting);
 	}
 }

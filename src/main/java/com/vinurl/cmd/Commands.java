@@ -1,7 +1,6 @@
 package com.vinurl.cmd;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
-import static com.vinurl.util.Constants.MOD_ID;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -10,7 +9,8 @@ import java.util.concurrent.CompletableFuture;
 import org.apache.commons.io.FileUtils;
 
 import com.mojang.brigadier.context.CommandContext;
-import com.vinurl.client.SoundManager;
+import com.vinurl.VinURL;
+import com.vinurl.client.SoundDownloadManager;
 import com.vinurl.exe.Executable;
 
 import io.wispforest.owo.config.ui.ConfigScreen;
@@ -23,7 +23,7 @@ public class Commands {
 
 	public static void register() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher,
-				registryAccess) -> dispatcher.register(ClientCommandManager.literal(MOD_ID)
+				registryAccess) -> dispatcher.register(ClientCommandManager.literal(VinURL.MOD_ID)
 						.then(ClientCommandManager.literal("delete").executes(Commands::deleteAudioFiles))
 						.then(ClientCommandManager.literal("update").executes(Commands::updateExecutables))
 						.then(ClientCommandManager.literal("config").executes(Commands::openConfig))));
@@ -31,7 +31,7 @@ public class Commands {
 
 	private static int deleteAudioFiles(CommandContext<FabricClientCommandSource> ctx) {
 		try {
-			FileUtils.deleteDirectory(SoundManager.AUDIO_DIRECTORY.toFile());
+			FileUtils.deleteDirectory(SoundDownloadManager.AUDIO_DIRECTORY.toFile());
 			ctx.getSource().sendFeedback(Text.literal("Deleted all audio files"));
 			return 1;
 		} catch (IOException e) {
@@ -60,7 +60,7 @@ public class Commands {
 	}
 
 	private static int openConfig(CommandContext<FabricClientCommandSource> ctx) {
-		CLIENT.send(() -> CLIENT.setScreen(Objects.requireNonNull(ConfigScreen.getProvider(MOD_ID)).apply(null)));
+		CLIENT.send(() -> CLIENT.setScreen(Objects.requireNonNull(ConfigScreen.getProvider(VinURL.MOD_ID)).apply(null)));
 		return 0;
 	}
 }

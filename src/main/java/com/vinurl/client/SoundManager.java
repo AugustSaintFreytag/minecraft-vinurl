@@ -1,85 +1,25 @@
 package com.vinurl.client;
 
-import com.jcraft.jorbis.JOrbisException;
-import com.jcraft.jorbis.VorbisFile;
-import com.vinurl.exe.Executable;
-import com.vinurl.gui.ProgressOverlay;
-import com.vinurl.util.MusicDescriptionFormatter;
+import static com.vinurl.client.VinURLClient.CLIENT;
+
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Path;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
-
-import static com.vinurl.client.VinURLClient.CLIENT;
-import static com.vinurl.util.Constants.LOGGER;
-import static com.vinurl.util.Constants.VINURLPATH;
 
 public class SoundManager {
-	// Configuration
 
-	public static final Path AUDIO_DIRECTORY = VINURLPATH.resolve("downloads");
-	public static final boolean ABBREVIATE_AUDIO_TITLES = false;
+	// State
 
-	private static final ConcurrentHashMap<Vec3d, FileSound> playingSounds = new ConcurrentHashMap<>();
-	private static final ConcurrentHashMap<String, String> descriptionCache = new ConcurrentHashMap<>();
+	private static final ConcurrentHashMap<Vec3d, CustomRecordSound> playingSounds = new ConcurrentHashMap<>();
 
-	// Download
-
-	public static void downloadSound(String url, String fileName) {
-		if (CLIENT.player == null) {
-			return;
-		}
-		ProgressOverlay.set(fileName, 0);
-
-		Executable.YT_DLP.executeCommand(fileName + "/download", url, "-x", "-q", "--progress", "--add-metadata", "--no-playlist",
-				"--progress-template", "PROGRESS: %(progress._percent)d", "--newline", "--break-match-filter",
-				"ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus", "--audio-format", "vorbis", "--audio-quality",
-				VinURLClient.CONFIG.audioBitrate().getValue(), "--postprocessor-args",
-				"ffmpeg:-af 'highpass=f=120, lowpass=f=9500, acompressor=threshold=-12dB:ratio=2.5:attack=10:release=200, acrusher=bits=10:mix=0.3, vibrato=f=4:d=0.003' -ac 1 -c:a libvorbis -q:a 3",
-				"-P", AUDIO_DIRECTORY.toString(), "--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(), "-o", fileName + ".%(ext)s")
-				.subscribe("main").onOutput(line -> {
-					String type = line.substring(0, line.indexOf(':') + 1);
-					String message = line.substring(type.length()).trim();
-
-					switch (type) {
-					case "PROGRESS:" -> ProgressOverlay.set(fileName, Integer.parseInt(message));
-					case "WARNING:" -> LOGGER.warn(message);
-					case "ERROR:" -> LOGGER.error(message);
-					default -> LOGGER.info(line);
-					}
-				}).onError(error -> {
-					ProgressOverlay.stopFailed(fileName);
-					deleteSound(fileName);
-				}).onComplete(() -> {
-					ProgressOverlay.stop(fileName);
-					descriptionToCache(fileName);
-				}).start();
-	}
-
-	public static void deleteSound(String fileName) {
-		File[] filesToDelete = AUDIO_DIRECTORY.toFile().listFiles(file -> file.getName().contains(fileName));
-		if (filesToDelete == null) {
-			return;
-		}
-
-		for (File file : filesToDelete) {
-			FileUtils.deleteQuietly(file);
-		}
-	}
+	// Playback
 
 	public static void playSound(Vec3d position) {
-		FileSound fileSound = playingSounds.get(position);
+		CustomRecordSound fileSound = playingSounds.get(position);
 		if (fileSound != null) {
 			CLIENT.getSoundManager().play(fileSound);
-			CLIENT.inGameHud.setRecordPlayingOverlay(Text.literal(getDescription(fileSound.fileName)));
+			CLIENT.inGameHud.setRecordPlayingOverlay(Text.literal(SoundDescriptionManager.getDescription(fileSound.fileName)));
 		}
 	}
 
@@ -88,74 +28,6 @@ public class SoundManager {
 	}
 
 	public static void addSound(String fileName, Vec3d position, boolean loop) {
-		playingSounds.put(position, new FileSound(fileName, position, loop));
-	}
-
-	public static void queueSound(String fileName, Vec3d position) {
-		Executable.YT_DLP.getProcessStream(fileName + "/download").subscribe(position.toString()).onComplete(() -> {
-			playSound(position);
-		}).start();
-	}
-
-	public static String getDescription(String fileName) {
-		return Optional.ofNullable(descriptionFromCache(fileName)).orElseGet(() -> descriptionToCache(fileName));
-	}
-
-	private static String getOggAttribute(String fileName, String attribute) {
-		VorbisFile vorbisFile = null;
-		try {
-			vorbisFile = new VorbisFile(getAudioFile(fileName).toString());
-			String metadata = vorbisFile.getComment(0).toString();
-
-			String filter = "Comment: " + attribute + "=";
-			return Stream.of(metadata.split("\n")).filter(line -> line.startsWith(filter)).map(line -> line.substring(filter.length()))
-					.findFirst().orElse("N/A");
-		} catch (JOrbisException e) {
-			return "N/A";
-		} finally {
-			if (vorbisFile != null) {
-				try {
-					vorbisFile.close();
-				} catch (IOException e) {
-					LOGGER.error("Error closing vorbis file", e);
-				}
-			}
-		}
-	}
-
-	public static String descriptionToCache(String fileName) {
-		descriptionCache.remove(fileName);
-		return descriptionCache.compute(fileName, (k, v) -> {
-			var artist = getOggAttribute(fileName, "artist");
-			var title = getOggAttribute(fileName, "title");
-
-			if (ABBREVIATE_AUDIO_TITLES) {
-				var maxLength = MusicDescriptionFormatter.DEFAULT_MAX_LENGTH;
-				return MusicDescriptionFormatter.abbreviateNameFromComponents(artist, title, maxLength);
-			}
-
-			return title;
-		});
-	}
-
-	public static String descriptionFromCache(String fileName) {
-		return descriptionCache.get(fileName);
-	}
-
-	public static String getBaseURL(String url) {
-		try {
-			URI baseURL = new URI(url);
-			return baseURL.getScheme() + "://" + baseURL.getHost();
-		} catch (Exception e) {
-			return "";
-		}
-	}
-
-	public static File getAudioFile(String fileName) {
-		return AUDIO_DIRECTORY.resolve(fileName + ".ogg").toFile();
-	}
-
-	public static String hashURL(String url) {
-		return (url == null || url.isEmpty()) ? "" : DigestUtils.sha256Hex(url);
+		playingSounds.put(position, new CustomRecordSound(fileName, position, loop));
 	}
 }
