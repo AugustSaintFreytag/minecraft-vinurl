@@ -10,9 +10,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.vinurl.VinURLItems;
+import com.vinurl.ModItems;
 import com.vinurl.api.VinURLSound;
-import com.vinurl.items.VinURLDisc;
+import com.vinurl.items.CustomMusicDiscItem;
 import com.vinurl.mixinaccessor.JukeboxInteractionAccessor;
 
 import net.minecraft.block.BlockState;
@@ -111,7 +111,7 @@ public abstract class JukeboxBlockEntityMixin extends BlockEntity implements Juk
 		}
 
 		NbtCompound nbt = getStack().getOrCreateNbt();
-		if (tickCount > recordStartTick + nbt.getInt(VinURLDisc.DISC_DURATION_KEY) * 20L) {
+		if (tickCount > recordStartTick + nbt.getInt(CustomMusicDiscItem.DISC_DURATION_KEY) * 20L) {
 			stopPlaying();
 			VinURLSound.stop(world, getStack(), position, false);
 			vinurl$setLastInteractingPlayer(null);
@@ -121,6 +121,6 @@ public abstract class JukeboxBlockEntityMixin extends BlockEntity implements Juk
 	// Types
 
 	private boolean isVinURLRecord() {
-		return getStack().isOf(VinURLItems.CUSTOM_RECORD) || getStack().isOf(VinURLItems.CUSTOM_RECORD_REWRITABLE);
+		return getStack().isOf(ModItems.CUSTOM_RECORD) || getStack().isOf(ModItems.CUSTOM_RECORD_REWRITABLE);
 	}
 }

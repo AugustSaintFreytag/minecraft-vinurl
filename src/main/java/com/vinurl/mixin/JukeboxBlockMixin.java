@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.vinurl.VinURLItems;
+import com.vinurl.ModItems;
 import com.vinurl.mixinaccessor.JukeboxInteractionAccessor;
 
 import net.minecraft.block.BlockState;
@@ -29,7 +29,7 @@ public class JukeboxBlockMixin {
 
 		var stack = player.getStackInHand(hand);
 
-		if (!stack.isOf(VinURLItems.CUSTOM_RECORD) && !stack.isOf(VinURLItems.CUSTOM_RECORD_REWRITABLE)) {
+		if (!stack.isOf(ModItems.CUSTOM_RECORD) && !stack.isOf(ModItems.CUSTOM_RECORD_REWRITABLE)) {
 			return;
 		}
 

@@ -10,7 +10,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import com.jcraft.jorbis.JOrbisException;
 import com.jcraft.jorbis.VorbisFile;
-import com.vinurl.VinURL;
+import com.vinurl.Mod;
 import com.vinurl.util.MusicDescriptionFormatter;
 
 public final class SoundDescriptionManager {
@@ -78,7 +78,7 @@ public final class SoundDescriptionManager {
 				try {
 					audioFile.close();
 				} catch (IOException e) {
-					VinURL.LOGGER.error("Error closing vorbis audio file.", e);
+					Mod.LOGGER.error("Error closing vorbis audio file.", e);
 				}
 			}
 		}

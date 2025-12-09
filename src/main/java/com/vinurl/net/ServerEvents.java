@@ -2,9 +2,9 @@ package com.vinurl.net;
 
 import java.net.URI;
 
-import com.vinurl.VinURLItems;
-import com.vinurl.VinURLNetwork;
-import com.vinurl.items.VinURLDisc;
+import com.vinurl.ModItems;
+import com.vinurl.ModNetworking;
+import com.vinurl.items.CustomMusicDiscItem;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -18,19 +18,19 @@ public class ServerEvents {
 	public static final int MAX_URL_LENGTH = 400;
 
 	public static void register() {
-		VinURLNetwork.NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.GUIRecord.class);
-		VinURLNetwork.NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.PlaySoundRecord.class);
-		VinURLNetwork.NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.StopSoundRecord.class);
+		ModNetworking.NETWORK_CHANNEL.registerClientboundDeferred(ModClientEvents.GUIRecord.class);
+		ModNetworking.NETWORK_CHANNEL.registerClientboundDeferred(ModClientEvents.PlaySoundRecord.class);
+		ModNetworking.NETWORK_CHANNEL.registerClientboundDeferred(ModClientEvents.StopSoundRecord.class);
 
 		// Server event handler for setting the URL on the custom record
-		VinURLNetwork.NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (payload, context) -> {
+		ModNetworking.NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (payload, context) -> {
 			PlayerEntity player = context.player();
 			Hand stackHand = null;
 			ItemStack stack = ItemStack.EMPTY;
 
 			for (Hand hand : Hand.values()) {
 				ItemStack currentStack = player.getStackInHand(hand);
-				if (currentStack.isOf(VinURLItems.CUSTOM_RECORD) || currentStack.isOf(VinURLItems.CUSTOM_RECORD_REWRITABLE)) {
+				if (currentStack.isOf(ModItems.CUSTOM_RECORD) || currentStack.isOf(ModItems.CUSTOM_RECORD_REWRITABLE)) {
 					stackHand = hand;
 					stack = currentStack;
 					break;
@@ -42,10 +42,10 @@ public class ServerEvents {
 				return;
 			}
 
-			boolean isRewritable = stack.isOf(VinURLItems.CUSTOM_RECORD_REWRITABLE);
+			boolean isRewritable = stack.isOf(ModItems.CUSTOM_RECORD_REWRITABLE);
 			NbtCompound currentData = stack.getOrCreateNbt();
 
-			if (currentData.getBoolean(VinURLDisc.DISC_LOCKED_NBT_KEY)) {
+			if (currentData.getBoolean(CustomMusicDiscItem.DISC_LOCKED_NBT_KEY)) {
 				player.sendMessage(Text.translatable("text.vinurl.custom_record.locked.tooltip"), true);
 				return;
 			}
@@ -75,10 +75,10 @@ public class ServerEvents {
 			}
 
 			currentData = singleRecordStack.getOrCreateNbt();
-			currentData.putString(VinURLDisc.DISC_URL_NBT_KEY, url);
-			currentData.putInt(VinURLDisc.DISC_DURATION_KEY, payload.duration());
-			currentData.putBoolean(VinURLDisc.DISC_LOCKED_NBT_KEY, !isRewritable || payload.lock());
-			currentData.putBoolean(VinURLDisc.DISC_REWRITABLE_NBT_KEY, isRewritable);
+			currentData.putString(CustomMusicDiscItem.DISC_URL_NBT_KEY, url);
+			currentData.putInt(CustomMusicDiscItem.DISC_DURATION_KEY, payload.duration());
+			currentData.putBoolean(CustomMusicDiscItem.DISC_LOCKED_NBT_KEY, !isRewritable || payload.lock());
+			currentData.putBoolean(CustomMusicDiscItem.DISC_REWRITABLE_NBT_KEY, isRewritable);
 
 			singleRecordStack.setNbt(currentData);
 			player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
