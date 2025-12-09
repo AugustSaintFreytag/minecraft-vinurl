@@ -23,5 +23,8 @@
 	"key.vinurl.accept": "Add Provider",
 	"item.vinurl.disc_core": "Disc Core",
 	"item.vinurl.disc_side": "Disc Side",
-	"item.vinurl.disc_label": "Disc Label"
+	"item.vinurl.disc_label": "Disc Label",
+	"item.vinurl.disc_core.dyed": "Dyed %s",
+	"item.vinurl.disc_side.dyed": "Dyed %s",
+	"item.vinurl.disc_label.dyed": "Dyed %s"
 }

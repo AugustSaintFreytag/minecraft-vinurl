@@ -4,6 +4,7 @@ import net.minecraft.item.DyeableItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.text.Text;
 
 public class DiscComponentItem extends Item implements DyeableItem {
 
@@ -26,5 +27,14 @@ public class DiscComponentItem extends Item implements DyeableItem {
 
 	public int getDefaultColor() {
 		return defaultColor;
+	}
+
+	@Override
+	public Text getName(ItemStack stack) {
+		if (!hasColor(stack)) {
+			return super.getName(stack);
+		}
+
+		return Text.translatable(getTranslationKey() + ".dyed", super.getName(stack));
 	}
 }
