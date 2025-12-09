@@ -11,7 +11,9 @@ import org.apache.commons.io.FileUtils;
 import com.vinurl.VinURL;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.ProgressOverlay;
+import com.vinurl.mixinaccessor.JukeboxInteractionAccessor;
 
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public class SoundDownloadManager {
@@ -70,6 +72,29 @@ public class SoundDownloadManager {
 
 	public static void queueSound(String fileName, Vec3d position) {
 		Executable.YT_DLP.getProcessStream(fileName + "/download").subscribe(position.toString()).onComplete(() -> {
+			var client = VinURLClient.CLIENT;
+			var player = client.player;
+
+			if (player == null) {
+				return;
+			}
+
+			var world = player.getWorld();
+
+			if (world == null) {
+				return;
+			}
+
+			var blockPosition = BlockPos.ofFloored(position);
+			var jukeboxBlockEntity = world.getBlockEntity(blockPosition);
+
+			if (!(jukeboxBlockEntity instanceof JukeboxInteractionAccessor)) {
+				return;
+			}
+
+			var jukeboxAccessor = (JukeboxInteractionAccessor) jukeboxBlockEntity;
+			jukeboxAccessor.vinurl$setRecordStartTick(world.getTime());
+
 			SoundManager.playSound(position);
 		}).start();
 	}

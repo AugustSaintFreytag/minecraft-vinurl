@@ -30,8 +30,10 @@ public class VinURLSound {
 		for (PlayerEntity player : world.getPlayers()) {
 			if (player.getPos().distanceTo(position.toCenterPos()) <= JUKEBOX_RANGE) {
 				var showOverlay = ownerUuid != null && ownerUuid.equals(player.getUuid());
-				VinURLNetwork.NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.PlaySoundRecord(position,
-						nbt.getString(VinURLDisc.DISC_URL_NBT_KEY), nbt.getBoolean(VinURLDisc.DISC_LOOP_NBT_KEY), showOverlay));
+				var discUrl = nbt.getString(VinURLDisc.DISC_URL_NBT_KEY);
+				var soundEvent = new ClientEvent.PlaySoundRecord(position, discUrl, showOverlay);
+
+				VinURLNetwork.NETWORK_CHANNEL.serverHandle(player).send(soundEvent);
 			}
 		}
 	}

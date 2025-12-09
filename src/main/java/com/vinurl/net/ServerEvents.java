@@ -27,6 +27,7 @@ public class ServerEvents {
 			PlayerEntity player = context.player();
 			Hand stackHand = null;
 			ItemStack stack = ItemStack.EMPTY;
+
 			for (Hand hand : Hand.values()) {
 				ItemStack currentStack = player.getStackInHand(hand);
 				if (currentStack.isOf(VinURLItems.CUSTOM_RECORD) || currentStack.isOf(VinURLItems.CUSTOM_RECORD_REWRITABLE)) {
@@ -76,7 +77,6 @@ public class ServerEvents {
 			currentData = singleRecordStack.getOrCreateNbt();
 			currentData.putString(VinURLDisc.DISC_URL_NBT_KEY, url);
 			currentData.putInt(VinURLDisc.DISC_DURATION_KEY, payload.duration());
-			currentData.putBoolean(VinURLDisc.DISC_LOOP_NBT_KEY, payload.loop());
 			currentData.putBoolean(VinURLDisc.DISC_LOCKED_NBT_KEY, !isRewritable || payload.lock());
 			currentData.putBoolean(VinURLDisc.DISC_REWRITABLE_NBT_KEY, isRewritable);
 
@@ -91,6 +91,6 @@ public class ServerEvents {
 		});
 	}
 
-	public record SetURLRecord(String url, int duration, boolean loop, boolean lock) {
+	public record SetURLRecord(String url, int duration, boolean lock) {
 	}
 }

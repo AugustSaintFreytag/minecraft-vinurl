@@ -35,7 +35,7 @@ public class ClientConfig {
 	}
 
 	@SectionHeader("audioSettings")
-	public AudioQuality audioBitrate = AudioQuality.MEDIUM;
+	public AudioQuality audioBitrate = AudioQuality.HIGH;
 
 	public enum AudioQuality {
 		LOW("48K"), MEDIUM("96K"), HIGH("128K");
