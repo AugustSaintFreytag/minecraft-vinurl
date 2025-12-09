@@ -20,5 +20,8 @@
 	"text.config.VinURLConfig.section.audioSettings": "Audio Settings",
 	"text.vinurl.custom_record.locked.tooltip": "Locked 🔒",
 	"category.vinurl": "VinURL",
-	"key.vinurl.accept": "Add Provider"
+	"key.vinurl.accept": "Add Provider",
+	"item.vinurl.disc_core": "Disc Core",
+	"item.vinurl.disc_side": "Disc Side",
+	"item.vinurl.disc_label": "Disc Label"
 }

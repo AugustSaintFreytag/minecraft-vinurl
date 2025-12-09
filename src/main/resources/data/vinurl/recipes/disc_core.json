@@ -1,0 +1,26 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern": [
+		"rqr",
+		"ddd",
+		"CCC"
+	],
+	"key": {
+		"C": {
+			"item": "minecraft:clay_ball"
+		},
+		"d": {
+			"item": "minecraft:black_dye"
+		},
+		"r": {
+			"item": "minecraft:redstone"
+		},
+		"q": {
+			"item": "create:polished_rose_quartz"
+		}
+	},
+	"result": {
+		"item": "vinurl:disc_core"
+	}
+}

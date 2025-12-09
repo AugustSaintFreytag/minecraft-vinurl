@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern": [
+		" d ",
+		"###"
+	],
+	"key": {
+		"d": {
+			"item": "minecraft:black_dye"
+		},
+		"#": {
+			"item": "minecraft:paper"
+		}
+	},
+	"result": {
+		"item": "vinurl:disc_label"
+	}
+}
