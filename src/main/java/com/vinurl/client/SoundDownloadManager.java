@@ -22,12 +22,14 @@ public class SoundDownloadManager {
 
 	// Download
 
-	public static void downloadSound(String url, String fileName) {
+	public static void downloadSound(String url, String fileName, boolean showOverlay) {
 		if (CLIENT.player == null) {
 			return;
 		}
 
-		ProgressOverlay.set(fileName, 0);
+		if (showOverlay) {
+			ProgressOverlay.set(fileName, 0);
+		}
 
 		var postProcessorArguments = getPostProcessorArguments();
 		var arguments = new String[] { url, "-x", "-q", "--progress", "--add-metadata", "--no-playlist", "--progress-template",

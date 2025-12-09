@@ -1,5 +1,7 @@
 package com.vinurl.api;
 
+import java.util.UUID;
+
 import com.vinurl.VinURLNetwork;
 import com.vinurl.items.VinURLDisc;
 import com.vinurl.net.ClientEvent;
@@ -13,8 +15,13 @@ import net.minecraft.world.World;
 public class VinURLSound {
 	private static final int JUKEBOX_RANGE = 64;
 
-	public static void play(World world, ItemStack stack, BlockPos position) {
-		if (world == null || world.isClient) {
+	// Configuration
+
+
+	// Playback
+
+	public static void play(World world, ItemStack stack, BlockPos position, UUID ownerUuid) {
+		if (world == null || world.isClient()) {
 			return;
 		}
 
@@ -22,8 +29,9 @@ public class VinURLSound {
 
 		for (PlayerEntity player : world.getPlayers()) {
 			if (player.getPos().distanceTo(position.toCenterPos()) <= JUKEBOX_RANGE) {
+				var showOverlay = ownerUuid != null && ownerUuid.equals(player.getUuid());
 				VinURLNetwork.NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.PlaySoundRecord(position,
-						nbt.getString(VinURLDisc.DISC_URL_NBT_KEY), nbt.getBoolean(VinURLDisc.DISC_LOOP_NBT_KEY)));
+						nbt.getString(VinURLDisc.DISC_URL_NBT_KEY), nbt.getBoolean(VinURLDisc.DISC_LOOP_NBT_KEY), showOverlay));
 			}
 		}
 	}
