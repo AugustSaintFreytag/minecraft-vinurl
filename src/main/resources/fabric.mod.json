@@ -16,10 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.vinurl.VinURL"
+			"com.vinurl.Mod"
 		],
 		"client": [
-			"com.vinurl.client.VinURLClient"
+			"com.vinurl.ModClient"
 		],
 		"modmenu": [
 			"com.vinurl.ModMenu"
