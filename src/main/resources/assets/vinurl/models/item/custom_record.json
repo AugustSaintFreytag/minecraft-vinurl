@@ -1,6 +1,9 @@
 {
-	"parent": "item/generated",
+	"parent": "minecraft:item/generated",
 	"textures": {
-		"layer0": "vinurl:item/custom_record"
+		"layer0": "vinurl:item/composite/disc_side_bottom",
+		"layer1": "vinurl:item/composite/disc_core",
+		"layer2": "vinurl:item/composite/disc_side_top",
+		"layer3": "vinurl:item/composite/disc_label"
 	}
 }
