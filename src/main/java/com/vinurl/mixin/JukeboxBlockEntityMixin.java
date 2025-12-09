@@ -43,18 +43,20 @@ public abstract class JukeboxBlockEntityMixin extends BlockEntity implements Juk
 
 	// Init
 
-	public JukeboxBlockEntityMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-		super(type, pos, state);
+	public JukeboxBlockEntityMixin(BlockEntityType<?> type, BlockPos position, BlockState state) {
+		super(type, position, state);
 	}
 
 	// Interaction
 
 	@Override
+	@Unique
 	public UUID vinurl$getLastInteractingPlayer() {
 		return vinurl$lastInteractingPlayer;
 	}
 
 	@Override
+	@Unique
 	public void vinurl$setLastInteractingPlayer(UUID playerUuid) {
 		this.vinurl$lastInteractingPlayer = playerUuid;
 	}
@@ -66,39 +68,53 @@ public abstract class JukeboxBlockEntityMixin extends BlockEntity implements Juk
 	}
 
 	@Inject(at = @At("HEAD"), method = "removeStack")
-	public void vinurl$stopPlaying(int slot, int amount, CallbackInfoReturnable<ItemStack> cir) {
-		if (isVinURLRecord()) {
-			VinURLSound.stop(world, getStack(), getPos(), false);
-			vinurl$setLastInteractingPlayer(null);
+	public void vinurl$stopPlaying(int slot, int amount, CallbackInfoReturnable<ItemStack> callbackInfo) {
+		if (!isVinURLRecord()) {
+			return;
 		}
+
+		VinURLSound.stop(world, getStack(), getPos(), false);
+		vinurl$setLastInteractingPlayer(null);
 	}
 
 	@Inject(at = @At("TAIL"), method = "setStack")
-	public void vinurl$startPlaying(int slot, ItemStack stack, CallbackInfo ci) {
-		if (isVinURLRecord()) {
-			VinURLSound.play(world, getStack(), getPos(), vinurl$getLastInteractingPlayer());
+	public void vinurl$startPlaying(int slot, ItemStack stack, CallbackInfo callbackInfo) {
+		if (!isVinURLRecord()) {
+			return;
 		}
+
+		VinURLSound.play(world, getStack(), getPos(), vinurl$getLastInteractingPlayer());
 	}
 
 	@Inject(at = @At("HEAD"), method = "dropRecord")
 	public void vinurl$cancelDownload(CallbackInfo ci) {
-		if (isVinURLRecord()) {
-			VinURLSound.stop(world, getStack(), getPos(), true);
-			vinurl$setLastInteractingPlayer(null);
+		if (!isVinURLRecord()) {
+			return;
 		}
+
+		VinURLSound.stop(world, getStack(), getPos(), true);
+		vinurl$setLastInteractingPlayer(null);
 	}
 
 	// Ticking
 
+	@Override
+	@Unique
+	public void vinurl$setRecordStartTick(long tick) {
+		this.recordStartTick = tick;
+	}
+
 	@Inject(at = @At("HEAD"), method = "tick(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V")
-	private void vinurl$tick(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
-		if (isVinURLRecord()) {
-			NbtCompound nbt = getStack().getOrCreateNbt();
-			if (tickCount > recordStartTick + nbt.getInt(VinURLDisc.DISC_DURATION_KEY) * 20L) {
-				stopPlaying();
-				VinURLSound.stop(world, getStack(), pos, false);
-				vinurl$setLastInteractingPlayer(null);
-			}
+	private void vinurl$tick(World world, BlockPos position, BlockState state, CallbackInfo callbackInfo) {
+		if (!isVinURLRecord()) {
+			return;
+		}
+
+		NbtCompound nbt = getStack().getOrCreateNbt();
+		if (tickCount > recordStartTick + nbt.getInt(VinURLDisc.DISC_DURATION_KEY) * 20L) {
+			stopPlaying();
+			VinURLSound.stop(world, getStack(), position, false);
+			vinurl$setLastInteractingPlayer(null);
 		}
 	}
 
