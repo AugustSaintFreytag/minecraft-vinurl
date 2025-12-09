@@ -1,11 +1,10 @@
 package com.vinurl.items;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 
 public record DiscDecoration(int coreColor, int sideColor, int labelColor) {
 
-	public static final int DEFAULT_CORE_COLOR = 0x3a3a3a;
+	public static final int DEFAULT_CORE_COLOR = 0x383838;
 	public static final int DEFAULT_SIDE_COLOR = 0x2d2d2d;
 	public static final int DEFAULT_LABEL_COLOR = 0xdddddd;
 
