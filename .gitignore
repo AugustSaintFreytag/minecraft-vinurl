@@ -1,22 +1,27 @@
-# gradle
+# System
 
-.gradle/
-build/
-out/
-classes/
+.DS_Store
+Thumbs.db
 
-# eclipse
+# Java
+
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
+
+# Eclipse
 
 *.launch
 
-# idea
+# Idea
 
 .idea/
 *.iml
 *.ipr
 *.iws
 
-# vscode
+# VS Code
 
 .settings/
 .vscode/
@@ -24,25 +29,15 @@ bin/
 .classpath
 .project
 
-# macos
+# Project
 
-*.DS_Store
-
-# fabric
-
+.gradle/
+build/
+out/
+classes/
 run/
+external/
 
-# java
-
-hs_err_*.log
-replay_*.log
-*.hprof
-*.jfr
-
-# javascript
-
-package.json
-package-lock.json
-node_modules/
+# Scripts
 
 git_archive_branch.sh
