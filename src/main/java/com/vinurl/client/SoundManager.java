@@ -16,7 +16,8 @@ public class SoundManager {
 	// Playback
 
 	public static void playSound(Vec3d position) {
-		CustomRecordSound fileSound = playingSounds.get(position);
+		var fileSound = playingSounds.get(position);
+
 		if (fileSound != null) {
 			CLIENT.getSoundManager().play(fileSound);
 			CLIENT.inGameHud.setRecordPlayingOverlay(Text.literal(SoundDescriptionManager.getDescription(fileSound.fileName)));
@@ -27,7 +28,7 @@ public class SoundManager {
 		CLIENT.getSoundManager().stop(playingSounds.remove(position));
 	}
 
-	public static void addSound(String fileName, Vec3d position, boolean loop) {
-		playingSounds.put(position, new CustomRecordSound(fileName, position, loop));
+	public static void addSound(String fileName, Vec3d position) {
+		playingSounds.put(position, new CustomRecordSound(fileName, position));
 	}
 }

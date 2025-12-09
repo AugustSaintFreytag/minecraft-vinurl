@@ -27,7 +27,6 @@ public class VinURLDisc extends MusicDiscItem {
 
 	public static final String DISC_URL_NBT_KEY = "MusicUrl";
 	public static final String DISC_REWRITABLE_NBT_KEY = "Rewritable";
-	public static final String DISC_LOOP_NBT_KEY = "Loop";
 	public static final String DISC_LOCKED_NBT_KEY = "Locked";
 	public static final String DISC_DURATION_KEY = "Duration";
 
@@ -51,8 +50,11 @@ public class VinURLDisc extends MusicDiscItem {
 		if (!world.isClient) {
 			NbtCompound nbt = stack.getOrCreateNbt();
 			if (!nbt.getBoolean(DISC_LOCKED_NBT_KEY)) {
-				VinURLNetwork.NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(nbt.getString(DISC_URL_NBT_KEY),
-						nbt.getInt(DISC_DURATION_KEY), nbt.getBoolean(DISC_LOOP_NBT_KEY), rewritable));
+				var discUrl = nbt.getString(DISC_URL_NBT_KEY);
+				var discDuration = nbt.getInt(DISC_DURATION_KEY);
+				var event = new ClientEvent.GUIRecord(discUrl, discDuration, rewritable);
+
+				VinURLNetwork.NETWORK_CHANNEL.serverHandle(player).send(event);
 			} else {
 				player.sendMessage(Text.translatable("text.vinurl.custom_record.locked.tooltip"), true);
 			}

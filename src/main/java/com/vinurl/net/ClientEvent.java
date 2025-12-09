@@ -31,11 +31,10 @@ public class ClientEvent {
 			}
 
 			var position = payload.position().toCenterPos();
-			var loop = payload.loop();
 			var fileName = SoundDescriptionManager.hashURL(url);
 			var showOverlay = payload.showOverlay();
 
-			SoundManager.addSound(fileName, position, loop);
+			SoundManager.addSound(fileName, position);
 
 			if (Executable.YT_DLP.isProcessRunning(fileName + "/download")) {
 				SoundDownloadManager.queueSound(fileName, position);
@@ -88,16 +87,16 @@ public class ClientEvent {
 
 		// Client event to open record ui
 		VinURLNetwork.NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
-			context.runtime().setScreen(new URLScreen(payload.url(), payload.duration(), payload.loop(), payload.rewritable()));
+			context.runtime().setScreen(new URLScreen(payload.url(), payload.duration(), payload.rewritable()));
 		});
 	}
 
-	public record PlaySoundRecord(BlockPos position, String url, boolean loop, boolean showOverlay) {
+	public record PlaySoundRecord(BlockPos position, String url, boolean showOverlay) {
 	}
 
 	public record StopSoundRecord(BlockPos position, String url, boolean canceled) {
 	}
 
-	public record GUIRecord(String url, int duration, boolean loop, boolean rewritable) {
+	public record GUIRecord(String url, int duration, boolean rewritable) {
 	}
 }
