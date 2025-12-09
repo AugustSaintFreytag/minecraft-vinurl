@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
-import com.vinurl.VinURLSounds;
+import com.vinurl.ModSounds;
 
 import net.minecraft.client.sound.AbstractSoundInstance;
 import net.minecraft.client.sound.AudioStream;
@@ -24,7 +24,7 @@ public class CustomRecordSound extends AbstractSoundInstance {
 	public final String fileName;
 
 	public CustomRecordSound(String fileName, Vec3d position) {
-		super(VinURLSounds.CUSTOM_MUSIC, SoundCategory.RECORDS, SoundInstance.createRandom());
+		super(ModSounds.CUSTOM_MUSIC, SoundCategory.RECORDS, SoundInstance.createRandom());
 		this.fileName = fileName;
 		this.repeat = false;
 		this.x = position.x;

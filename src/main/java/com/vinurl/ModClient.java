@@ -1,13 +1,10 @@
-package com.vinurl.client;
+package com.vinurl;
 
-import com.vinurl.VinURL;
-import com.vinurl.VinURLItems;
-import com.vinurl.client.VinURLConfig;
-import com.vinurl.cmd.Commands;
+import com.vinurl.client.SoundDescriptionManager;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.ProgressOverlay;
-import com.vinurl.items.VinURLDisc;
-import com.vinurl.net.ClientEvent;
+import com.vinurl.items.CustomMusicDiscItem;
+import com.vinurl.net.ModClientEvents;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -17,38 +14,36 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class VinURLClient implements ClientModInitializer {
-	public static final VinURLConfig CONFIG = VinURLConfig.createAndLoad();
-	public static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+public class ModClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
 		// Downloads FFmpeg, FFprobe and YT-DLP if they do not exist and checks for updates.
 		for (Executable executable : Executable.values()) {
 			if (!executable.checkForExecutable()) {
-				VinURL.LOGGER.error("Failed to load executable {}", executable);
+				Mod.LOGGER.error("Failed to load executable {}", executable);
 			}
 		}
 
-		KeyListener.register();
-		Commands.register();
-		ClientEvent.register();
+		ModInputListener.register();
+		ModClientEvents.register();
+		ModCommands.register();
 
 		ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
-			if (!stack.isOf(VinURLItems.CUSTOM_RECORD) && !stack.isOf(VinURLItems.CUSTOM_RECORD_REWRITABLE)) {
+			if (!stack.isOf(ModItems.CUSTOM_RECORD) && !stack.isOf(ModItems.CUSTOM_RECORD_REWRITABLE)) {
 				return;
 			}
 
-			if (stack.isOf(VinURLItems.CUSTOM_RECORD)) {
+			if (stack.isOf(ModItems.CUSTOM_RECORD)) {
 				lines.remove(Text.translatable("item.vinurl.custom_record.desc").formatted(Formatting.GRAY));
 			}
 
-			if (stack.isOf(VinURLItems.CUSTOM_RECORD_REWRITABLE)) {
+			if (stack.isOf(ModItems.CUSTOM_RECORD_REWRITABLE)) {
 				lines.remove(Text.translatable("item.vinurl.custom_record_rewritable.desc").formatted(Formatting.GRAY));
 			}
 
-			if (CONFIG.showDescription()) {
-				String fileName = SoundDescriptionManager.hashURL(stack.getOrCreateNbt().getString(VinURLDisc.DISC_URL_NBT_KEY));
+			if (Mod.CONFIG.addDescriptionToItemTooltip) {
+				String fileName = SoundDescriptionManager.hashURL(stack.getOrCreateNbt().getString(CustomMusicDiscItem.DISC_URL_NBT_KEY));
 
 				if (!fileName.isEmpty()) {
 					lines.add(Text.literal(SoundDescriptionManager.getDescription(fileName)).formatted(Formatting.GRAY));
@@ -63,7 +58,8 @@ public class VinURLClient implements ClientModInitializer {
 		});
 
 		HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
-			ProgressOverlay.render(drawContext);
+			var client = MinecraftClient.getInstance();
+			ProgressOverlay.render(client, drawContext);
 		});
 	}
 }

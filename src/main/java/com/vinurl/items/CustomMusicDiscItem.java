@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.vinurl.VinURLNetwork;
-import com.vinurl.VinURLSounds;
-import com.vinurl.net.ClientEvent;
+import com.vinurl.ModNetworking;
+import com.vinurl.ModSounds;
+import com.vinurl.net.ModClientEvents;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.client.item.TooltipContext;
@@ -21,7 +21,7 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
-public class VinURLDisc extends MusicDiscItem {
+public class CustomMusicDiscItem extends MusicDiscItem {
 
 	// NBT
 
@@ -36,9 +36,8 @@ public class VinURLDisc extends MusicDiscItem {
 
 	// Init
 
-	public VinURLDisc(boolean isRewritable) {
-		super(15, VinURLSounds.CUSTOM_MUSIC, new FabricItemSettings().maxCount(1).rarity(isRewritable ? Rarity.UNCOMMON : Rarity.RARE),
-				3600);
+	public CustomMusicDiscItem(boolean isRewritable) {
+		super(15, ModSounds.CUSTOM_MUSIC, new FabricItemSettings().maxCount(1).rarity(isRewritable ? Rarity.UNCOMMON : Rarity.RARE), 3600);
 		this.rewritable = isRewritable;
 	}
 
@@ -52,9 +51,9 @@ public class VinURLDisc extends MusicDiscItem {
 			if (!nbt.getBoolean(DISC_LOCKED_NBT_KEY)) {
 				var discUrl = nbt.getString(DISC_URL_NBT_KEY);
 				var discDuration = nbt.getInt(DISC_DURATION_KEY);
-				var event = new ClientEvent.GUIRecord(discUrl, discDuration, rewritable);
+				var event = new ModClientEvents.GUIRecord(discUrl, discDuration, rewritable);
 
-				VinURLNetwork.NETWORK_CHANNEL.serverHandle(player).send(event);
+				ModNetworking.NETWORK_CHANNEL.serverHandle(player).send(event);
 			} else {
 				player.sendMessage(Text.translatable("text.vinurl.custom_record.locked.tooltip"), true);
 			}

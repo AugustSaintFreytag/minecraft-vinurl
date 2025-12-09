@@ -1,4 +1,4 @@
-package com.vinurl.client;
+package com.vinurl;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
-public class KeyListener {
+public class ModInputListener {
 	private static final int KEY_PRESS_TIMEOUT_MILLIS = 5000;
 	private static KeyBinding acceptKey;
 	private static CompletableFuture<Boolean> waitingFuture;

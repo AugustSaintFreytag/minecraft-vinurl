@@ -1,7 +1,5 @@
 package com.vinurl.exe;
 
-import static com.vinurl.client.VinURLClient.CONFIG;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +21,7 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.commons.lang3.SystemUtils;
 
-import com.vinurl.VinURL;
+import com.vinurl.Mod;
 
 public enum Executable {
 
@@ -34,7 +32,7 @@ public enum Executable {
 	FFMPEG("ffmpeg", "eugeneware/ffmpeg-static",
 			String.format("ffmpeg-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")));
 
-	public final Path DIRECTORY = VinURL.PATH.resolve("executables");
+	public final Path DIRECTORY = Mod.PATH.resolve("executables");
 	private final String FILE_NAME;
 	private final String REPOSITORY_NAME;
 	private final String REPOSITORY_FILE;
@@ -76,7 +74,7 @@ public enum Executable {
 				stream.process.destroyForcibly();
 				stream.process.onExit().join();
 			} catch (Exception e) {
-				VinURL.LOGGER.error("Failed to kill process with ID: {}", id, e);
+				Mod.LOGGER.error("Failed to kill process with ID: {}", id, e);
 			}
 		}
 	}
@@ -91,7 +89,7 @@ public enum Executable {
 		if (DIRECTORY.toFile().exists() || DIRECTORY.toFile().mkdirs()) {
 			if (!FILE_PATH.toFile().exists()) {
 				return downloadExecutable();
-			} else if (CONFIG.updatesOnStartup()) {
+			} else if (Mod.CONFIG.checkForUpdatesOnStartup) {
 				checkForUpdates();
 			}
 			return true;

@@ -5,13 +5,13 @@ import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
-public final class VinURLSounds {
+public final class ModSounds {
 
 	public static SoundEvent CUSTOM_MUSIC;
 	public static SoundEvent FAST_FORWARD_RECORD;
 
 	public static void initialize() {
-		CUSTOM_MUSIC = registerSound(Identifier.of(VinURL.MOD_ID, "placeholder"));
+		CUSTOM_MUSIC = registerSound(Identifier.of(Mod.MOD_ID, "placeholder"));
 	}
 
 	private static SoundEvent registerSound(Identifier identifier) {

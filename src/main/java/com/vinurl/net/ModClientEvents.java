@@ -1,11 +1,10 @@
 package com.vinurl.net;
 
-import static com.vinurl.client.VinURLClient.CONFIG;
-
 import java.util.List;
 
-import com.vinurl.VinURLNetwork;
-import com.vinurl.client.KeyListener;
+import com.vinurl.Mod;
+import com.vinurl.ModInputListener;
+import com.vinurl.ModNetworking;
 import com.vinurl.client.SoundDescriptionManager;
 import com.vinurl.client.SoundDownloadManager;
 import com.vinurl.client.SoundManager;
@@ -17,11 +16,11 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-public class ClientEvent {
+public class ModClientEvents {
 
 	public static void register() {
 		// Client event for playing sounds
-		VinURLNetwork.NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (payload, context) -> {
+		ModNetworking.NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (payload, context) -> {
 			var client = context.runtime();
 			var player = client.player;
 			var url = payload.url();
@@ -46,8 +45,8 @@ public class ClientEvent {
 				return;
 			}
 
-			if (CONFIG.downloadEnabled()) {
-				List<String> whitelist = CONFIG.urlWhitelist();
+			if (Mod.CONFIG.enableDownloads) {
+				List<String> whitelist = List.of(Mod.CONFIG.sourceWhitelist.split(","));
 				String baseURL = SoundDownloadManager.getBaseURL(url);
 
 				if (whitelist.stream().anyMatch(url::startsWith)) {
@@ -56,14 +55,11 @@ public class ClientEvent {
 					return;
 				}
 
-				player.sendMessage(Text.literal("Press ").append(Text.literal(KeyListener.getHotKey()).formatted(Formatting.YELLOW))
+				player.sendMessage(Text.literal("Press ").append(Text.literal(ModInputListener.getHotKey()).formatted(Formatting.YELLOW))
 						.append(" to whitelist ").append(Text.literal(baseURL).formatted(Formatting.YELLOW)), true);
 
-				KeyListener.waitForKeyPress().thenAccept(confirmed -> {
+				ModInputListener.waitForKeyPress().thenAccept(confirmed -> {
 					if (confirmed) {
-						whitelist.add(baseURL);
-						CONFIG.save();
-
 						SoundDownloadManager.downloadSound(url, fileName, showOverlay);
 						SoundDownloadManager.queueSound(fileName, position);
 					}
@@ -72,7 +68,7 @@ public class ClientEvent {
 		});
 
 		// Client event for stopping sounds
-		VinURLNetwork.NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (payload, context) -> {
+		ModNetworking.NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (payload, context) -> {
 			Vec3d position = payload.position().toCenterPos();
 			String id = SoundDescriptionManager.hashURL(payload.url()) + "/download";
 			SoundManager.stopSound(position);
@@ -86,7 +82,7 @@ public class ClientEvent {
 		});
 
 		// Client event to open record ui
-		VinURLNetwork.NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
+		ModNetworking.NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
 			context.runtime().setScreen(new URLScreen(payload.url(), payload.duration(), payload.rewritable()));
 		});
 	}

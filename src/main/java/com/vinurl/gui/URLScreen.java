@@ -1,12 +1,10 @@
 package com.vinurl.gui;
 
-import static com.vinurl.client.VinURLClient.CLIENT;
-
 import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.vinurl.VinURL;
-import com.vinurl.VinURLNetwork;
+import com.vinurl.Mod;
+import com.vinurl.ModNetworking;
 import com.vinurl.client.SoundDescriptionManager;
 import com.vinurl.exe.Executable;
 import com.vinurl.net.ServerEvents;
@@ -20,6 +18,7 @@ import io.wispforest.owo.ui.component.TextureComponent;
 import io.wispforest.owo.ui.container.StackLayout;
 import io.wispforest.owo.ui.core.PositionedRectangle;
 import io.wispforest.owo.ui.util.NinePatchTexture;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -41,15 +40,15 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 
 	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		Identifier texture = !simulate ? (button.active && button.isHovered() ? Identifier.of(VinURL.MOD_ID, "simulate_button_hovered")
-				: Identifier.of(VinURL.MOD_ID, "simulate_button")) : Identifier.of(VinURL.MOD_ID, "simulate_button_disabled");
+		Identifier texture = !simulate ? (button.active && button.isHovered() ? Identifier.of(Mod.MOD_ID, "simulate_button_hovered")
+				: Identifier.of(Mod.MOD_ID, "simulate_button")) : Identifier.of(Mod.MOD_ID, "simulate_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	// Init
 
 	public URLScreen(String defaultURL, int defaultDuration, boolean rewritable) {
-		super(StackLayout.class, DataSource.asset(Identifier.of(VinURL.MOD_ID, "disc_url_screen")));
+		super(StackLayout.class, DataSource.asset(Identifier.of(Mod.MOD_ID, "disc_url_screen")));
 
 		this.url = defaultURL;
 		this.duration = defaultDuration;
@@ -106,11 +105,11 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 						}
 
 						if (type.equals("WARNING:")) {
-							VinURL.LOGGER.warn(message);
+							Mod.LOGGER.warn(message);
 							return;
 						}
 
-						VinURL.LOGGER.error(message);
+						Mod.LOGGER.error(message);
 						return;
 					}).onError(error -> {
 						button.tooltip(Text.literal("Automatic Duration"));
@@ -129,9 +128,11 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		var client = MinecraftClient.getInstance();
+
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
-			VinURLNetwork.NETWORK_CHANNEL.clientHandle().send(new ServerEvents.SetURLRecord(url, duration, !rewritable));
-			CLIENT.setScreen(null);
+			ModNetworking.NETWORK_CHANNEL.clientHandle().send(new ServerEvents.SetURLRecord(url, duration, !rewritable));
+			client.setScreen(null);
 		}
 
 		return super.keyPressed(keyCode, scanCode, modifiers);
@@ -140,9 +141,10 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
+		var client = MinecraftClient.getInstance();
 
 		if (sliderDragged) {
-			context.drawTooltip(CLIENT.textRenderer, Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)), mouseX,
+			context.drawTooltip(client.textRenderer, Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)), mouseX,
 					mouseY);
 		}
 	}
