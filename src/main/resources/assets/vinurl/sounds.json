@@ -2,7 +2,7 @@
 	"placeholder": {
 		"sounds": [
 			{
-				"name": "vinurl:placeholder",
+				"name": "fabric-sound-api-v1:empty",
 				"attenuation_distance": 64,
 				"stream": true
 			}
