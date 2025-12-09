@@ -39,6 +39,7 @@ public class Mod implements ModInitializer {
 
 		ModItems.initialize();
 		ModSounds.initialize();
+		ModRecipes.initialize();
 		ModNetworking.initialize();
 
 		ServerEvents.register();

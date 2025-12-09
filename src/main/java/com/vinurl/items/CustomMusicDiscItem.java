@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import com.vinurl.ModNetworking;
 import com.vinurl.ModSounds;
 import com.vinurl.net.ModClientEvents;
+import com.vinurl.items.DiscDecoration;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.client.item.TooltipContext;
@@ -29,6 +30,7 @@ public class CustomMusicDiscItem extends MusicDiscItem {
 	public static final String DISC_REWRITABLE_NBT_KEY = "Rewritable";
 	public static final String DISC_LOCKED_NBT_KEY = "Locked";
 	public static final String DISC_DURATION_KEY = "Duration";
+	public static final String DISC_DECORATION_KEY = "Decoration";
 
 	// State
 
@@ -77,5 +79,17 @@ public class CustomMusicDiscItem extends MusicDiscItem {
 		if (nbt.getBoolean(DISC_LOCKED_NBT_KEY)) {
 			tooltip.add(Text.translatable("text.vinurl.custom_record.locked.tooltip").formatted(Formatting.GRAY));
 		}
+	}
+
+	public static DiscDecoration getDecoration(ItemStack stack) {
+		return DiscDecoration.from(stack);
+	}
+
+	public static void setDecoration(ItemStack stack, DiscDecoration decoration) {
+		decoration.writeTo(stack);
+	}
+
+	public boolean isRewritable() {
+		return rewritable;
 	}
 }
