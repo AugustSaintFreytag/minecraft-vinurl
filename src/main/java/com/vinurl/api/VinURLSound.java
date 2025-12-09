@@ -13,10 +13,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class VinURLSound {
-	private static final int JUKEBOX_RANGE = 64;
 
 	// Configuration
 
+	private static final int JUKEBOX_RANGE = 16 * 16;
 
 	// Playback
 
