@@ -12,7 +12,6 @@ import com.vinurl.client.SoundManager;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.URLScreen;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
@@ -23,15 +22,18 @@ public class ClientEvent {
 	public static void register() {
 		// Client event for playing sounds
 		VinURLNetwork.NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (payload, context) -> {
-			Vec3d position = payload.position().toCenterPos();
-			String url = payload.url();
-			boolean loop = payload.loop();
-			String fileName = SoundDescriptionManager.hashURL(url);
-			MinecraftClient client = context.runtime();
+			var client = context.runtime();
+			var player = client.player;
+			var url = payload.url();
 
-			if (client.player == null || url.isEmpty()) {
+			if (player == null || url.isEmpty()) {
 				return;
 			}
+
+			var position = payload.position().toCenterPos();
+			var loop = payload.loop();
+			var fileName = SoundDescriptionManager.hashURL(url);
+			var showOverlay = payload.showOverlay();
 
 			SoundManager.addSound(fileName, position, loop);
 
@@ -50,19 +52,20 @@ public class ClientEvent {
 				String baseURL = SoundDownloadManager.getBaseURL(url);
 
 				if (whitelist.stream().anyMatch(url::startsWith)) {
-					SoundDownloadManager.downloadSound(url, fileName);
+					SoundDownloadManager.downloadSound(url, fileName, showOverlay);
 					SoundDownloadManager.queueSound(fileName, position);
 					return;
 				}
 
-				client.player.sendMessage(Text.literal("Press ").append(Text.literal(KeyListener.getHotKey()).formatted(Formatting.YELLOW))
+				player.sendMessage(Text.literal("Press ").append(Text.literal(KeyListener.getHotKey()).formatted(Formatting.YELLOW))
 						.append(" to whitelist ").append(Text.literal(baseURL).formatted(Formatting.YELLOW)), true);
 
 				KeyListener.waitForKeyPress().thenAccept(confirmed -> {
 					if (confirmed) {
 						whitelist.add(baseURL);
 						CONFIG.save();
-						SoundDownloadManager.downloadSound(url, fileName);
+
+						SoundDownloadManager.downloadSound(url, fileName, showOverlay);
 						SoundDownloadManager.queueSound(fileName, position);
 					}
 				});
@@ -89,7 +92,7 @@ public class ClientEvent {
 		});
 	}
 
-	public record PlaySoundRecord(BlockPos position, String url, boolean loop) {
+	public record PlaySoundRecord(BlockPos position, String url, boolean loop, boolean showOverlay) {
 	}
 
 	public record StopSoundRecord(BlockPos position, String url, boolean canceled) {
