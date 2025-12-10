@@ -1,0 +1,6 @@
+{
+	"parent": "vinurl:item/custom_record",
+	"textures": {
+		"layer3": "vinurl:item/composite/disc_label"
+	}
+}

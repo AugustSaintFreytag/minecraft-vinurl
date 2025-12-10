@@ -1,0 +1,6 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "vinurl:item/disc_core_rewritable"
+	}
+}
