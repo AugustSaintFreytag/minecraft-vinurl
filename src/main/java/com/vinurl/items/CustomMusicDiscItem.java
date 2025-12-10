@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 import com.vinurl.ModNetworking;
 import com.vinurl.ModSounds;
 import com.vinurl.net.ModClientEvents;
-import com.vinurl.items.DiscDecoration;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.client.item.TooltipContext;

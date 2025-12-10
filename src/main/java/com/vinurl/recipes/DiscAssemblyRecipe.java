@@ -12,9 +12,11 @@ import com.vinurl.items.DiscDecoration;
 import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.SpecialCraftingRecipe;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
@@ -70,7 +72,7 @@ public class DiscAssemblyRecipe extends SpecialCraftingRecipe {
 
 			if (stack.isOf(ModItems.DISC_CORE)) {
 				var color = getComponentColor(stack, DiscDecoration.DEFAULT_CORE_COLOR);
-				decoration = new DiscDecoration(color, decoration.sideColor(), decoration.labelColor());
+				decoration = new DiscDecoration(color, decoration.sideColor(), decoration.labelColor(), hasLabel);
 			} else if (stack.isOf(ModItems.DISC_SIDE)) {
 				var color = getComponentColor(stack, DiscDecoration.DEFAULT_SIDE_COLOR);
 				sideColors.add(color);
@@ -84,14 +86,33 @@ public class DiscAssemblyRecipe extends SpecialCraftingRecipe {
 		var finalLabelColor = hasLabel ? labelColor : DiscDecoration.DEFAULT_LABEL_COLOR;
 
 		var result = new ItemStack(ModItems.CUSTOM_RECORD);
-		CustomMusicDiscItem.setDecoration(result, new DiscDecoration(decoration.coreColor(), sideColor, finalLabelColor));
+		CustomMusicDiscItem.setDecoration(result, new DiscDecoration(decoration.coreColor(), sideColor, finalLabelColor, hasLabel));
 
 		return result;
 	}
 
 	@Override
+	public ItemStack getOutput(DynamicRegistryManager registryManager) {
+		return new ItemStack(ModItems.CUSTOM_RECORD);
+	}
+
+	@Override
+	public DefaultedList<Ingredient> getIngredients() {
+		var list = DefaultedList.ofSize(3, Ingredient.EMPTY);
+		list.set(0, Ingredient.ofItems(ModItems.DISC_CORE));
+		list.set(1, Ingredient.ofItems(ModItems.DISC_SIDE));
+		list.set(2, Ingredient.ofItems(ModItems.DISC_SIDE));
+		return list;
+	}
+
+	@Override
 	public boolean fits(int width, int height) {
 		return width * height >= 4;
+	}
+
+	@Override
+	public boolean isIgnoredInRecipeBook() {
+		return false;
 	}
 
 	@Override

@@ -74,7 +74,7 @@ public class ApplyLabelRecipe extends SpecialCraftingRecipe {
 				? ((DyeableItem) label.getItem()).getColor(label)
 				: ((DiscComponentItem) label.getItem()).getDefaultColor();
 
-		CustomMusicDiscItem.setDecoration(disc, new DiscDecoration(decoration.coreColor(), decoration.sideColor(), labelColor));
+		CustomMusicDiscItem.setDecoration(disc, new DiscDecoration(decoration.coreColor(), decoration.sideColor(), labelColor, true));
 		return disc;
 	}
 

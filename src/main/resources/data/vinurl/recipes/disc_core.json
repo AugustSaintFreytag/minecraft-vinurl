@@ -4,10 +4,10 @@
 	"pattern": [
 		"rqr",
 		"ddd",
-		"CCC"
+		"ccc"
 	],
 	"key": {
-		"C": {
+		"c": {
 			"item": "minecraft:clay_ball"
 		},
 		"d": {

@@ -1,0 +1,23 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern": [
+		" g ",
+		"qCq",
+		" g "
+	],
+	"key": {
+		"C": {
+			"item": "vinurl:disc_core"
+		},
+		"g": {
+			"item": "minecraft:gold_ingot"
+		},
+		"q": {
+			"item": "create:polished_rose_quartz"
+		}
+	},
+	"result": {
+		"item": "vinurl:disc_core_rewritable"
+	}
+}

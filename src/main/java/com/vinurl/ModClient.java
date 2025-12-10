@@ -12,9 +12,11 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 public class ModClient implements ClientModInitializer {
 
@@ -50,6 +52,9 @@ public class ModClient implements ClientModInitializer {
 			default -> 0xFFFFFF;
 			};
 		}, ModItems.CUSTOM_RECORD);
+
+		ModelPredicateProviderRegistry.register(ModItems.CUSTOM_RECORD, Identifier.of(Mod.MOD_ID, "has_label"),
+				(stack, world, entity, seed) -> CustomMusicDiscItem.getDecoration(stack).hasLabel() ? 1.0f : 0.0f);
 
 		ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
 			if (!stack.isOf(ModItems.CUSTOM_RECORD) && !stack.isOf(ModItems.CUSTOM_RECORD_REWRITABLE)) {
