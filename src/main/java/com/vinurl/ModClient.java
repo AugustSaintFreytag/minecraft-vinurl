@@ -57,8 +57,15 @@ public class ModClient implements ClientModInitializer {
 			};
 		}, ModItems.CUSTOM_RECORD);
 
-		ModelPredicateProviderRegistry.register(ModItems.CUSTOM_RECORD, Identifier.of(Mod.MOD_ID, "has_label"),
-				(stack, world, entity, seed) -> CustomMusicDiscItem.getDecoration(stack).hasLabel() ? 1.0f : 0.0f);
+		ModelPredicateProviderRegistry.register(ModItems.CUSTOM_RECORD, Identifier.of(Mod.MOD_ID, "is_dyed"),
+				(stack, world, entity, seed) -> {
+					return stack.hasNbt() ? 1.0f : 0.0f;
+				});
+
+		ModelPredicateProviderRegistry.register(ModItems.CUSTOM_RECORD, Identifier.of(Mod.MOD_ID, "is_dyed_and_labeled"),
+				(stack, world, entity, seed) -> {
+					return CustomMusicDiscItem.getDecoration(stack).hasLabel() ? 1.0f : 0.0f;
+				});
 
 		ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
 			if (!stack.isOf(ModItems.CUSTOM_RECORD) && !stack.isOf(ModItems.CUSTOM_RECORD_REWRITABLE)) {

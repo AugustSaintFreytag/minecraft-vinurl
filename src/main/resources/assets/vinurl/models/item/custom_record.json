@@ -1,14 +1,16 @@
 {
 	"parent": "minecraft:item/generated",
 	"textures": {
-		"layer0": "vinurl:item/composite/disc_side_bottom",
-		"layer1": "vinurl:item/composite/disc_core",
-		"layer2": "vinurl:item/composite/disc_side_top"
+		"layer0": "vinurl:item/custom_record"
 	},
 	"overrides": [
 		{
-			"predicate": { "vinurl:has_label": 1.0 },
-			"model": "vinurl:item/custom_record_with_label"
+			"predicate": { "vinurl:is_dyed": 1 },
+			"model": "vinurl:item/custom_record_dyed"
+		},
+		{
+			"predicate": { "vinurl:is_dyed_and_labeled": 1 },
+			"model": "vinurl:item/custom_record_dyed_with_label"
 		}
 	]
 }
