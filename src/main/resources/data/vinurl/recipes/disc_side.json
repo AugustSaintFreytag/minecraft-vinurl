@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern": [
+		" d ",
+		"ccc"
+	],
+	"key": {
+		"c": {
+			"item": "minecraft:clay_ball"
+		},
+		"d": {
+			"item": "minecraft:black_dye"
+		}
+	},
+	"result": {
+		"item": "vinurl:disc_side"
+	}
+}

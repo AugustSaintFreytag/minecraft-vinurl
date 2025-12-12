@@ -2,22 +2,16 @@
 	"type": "minecraft:crafting_shaped",
 	"category": "misc",
 	"pattern": [
-		"qDq",
-		"ddd",
-		"CCC"
+		"S",
+		"C",
+		"S"
 	],
 	"key": {
 		"C": {
-			"item": "minecraft:clay_ball"
+			"item": "vinurl:disc_core_rewritable"
 		},
-		"d": {
-			"item": "minecraft:black_dye"
-		},
-		"q": {
-			"item": "create:polished_rose_quartz"
-		},
-		"D": {
-			"item": "minecraft:diamond"
+		"S": {
+			"item": "vinurl:disc_side"
 		}
 	},
 	"result": {

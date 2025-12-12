@@ -1,6 +1,6 @@
 {
 	"parent": "minecraft:item/generated",
 	"textures": {
-		"layer0": "vinurl:item/custom_record_rewritable"
+		"layer0": "vinurl:item/disc_side"
 	}
 }

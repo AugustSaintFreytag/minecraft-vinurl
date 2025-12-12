@@ -1,6 +1,16 @@
 {
-	"parent": "item/generated",
+	"parent": "minecraft:item/generated",
 	"textures": {
 		"layer0": "vinurl:item/custom_record"
-	}
+	},
+	"overrides": [
+		{
+			"predicate": { "vinurl:is_dyed": 1 },
+			"model": "vinurl:item/custom_record_dyed"
+		},
+		{
+			"predicate": { "vinurl:is_dyed_and_labeled": 1 },
+			"model": "vinurl:item/custom_record_dyed_with_label"
+		}
+	]
 }
