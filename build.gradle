@@ -38,6 +38,13 @@ dependencies {
 	modImplementation("com.terraformersmc:modmenu:${project.run_mod_menu_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+	
+	// EMI (optional)
+	
+	modCompileOnly("dev.emi:emi-fabric:${project.run_emi_version}:api")
+	modLocalRuntime("dev.emi:emi-fabric:${project.run_emi_version}") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
 
 	// Jorbis
 
