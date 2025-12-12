@@ -16,8 +16,8 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.SpecialCraftingRecipe;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
 public class DiscAssemblyRecipe extends SpecialCraftingRecipe {
@@ -99,9 +99,11 @@ public class DiscAssemblyRecipe extends SpecialCraftingRecipe {
 	@Override
 	public DefaultedList<Ingredient> getIngredients() {
 		var list = DefaultedList.ofSize(3, Ingredient.EMPTY);
+
 		list.set(0, Ingredient.ofItems(ModItems.DISC_CORE));
 		list.set(1, Ingredient.ofItems(ModItems.DISC_SIDE));
 		list.set(2, Ingredient.ofItems(ModItems.DISC_SIDE));
+
 		return list;
 	}
 

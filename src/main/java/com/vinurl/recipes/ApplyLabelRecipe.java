@@ -31,7 +31,7 @@ public class ApplyLabelRecipe extends SpecialCraftingRecipe {
 				continue;
 			}
 
-			if (stack.isOf(ModItems.CUSTOM_RECORD)) {
+			if (isDisc(stack)) {
 				discCount++;
 			} else if (stack.isOf(ModItems.DISC_LABEL)) {
 				labelCount++;
@@ -58,7 +58,7 @@ public class ApplyLabelRecipe extends SpecialCraftingRecipe {
 				continue;
 			}
 
-			if (stack.isOf(ModItems.CUSTOM_RECORD)) {
+			if (isDisc(stack)) {
 				disc = stack.copyWithCount(1);
 			} else if (stack.isOf(ModItems.DISC_LABEL)) {
 				label = stack;
@@ -70,9 +70,7 @@ public class ApplyLabelRecipe extends SpecialCraftingRecipe {
 		}
 
 		var decoration = CustomMusicDiscItem.getDecoration(disc);
-		var labelColor = ((DyeableItem) label.getItem()).hasColor(label)
-				? ((DyeableItem) label.getItem()).getColor(label)
-				: ((DiscComponentItem) label.getItem()).getDefaultColor();
+		var labelColor = getLabelColor(label);
 
 		CustomMusicDiscItem.setDecoration(disc, new DiscDecoration(decoration.coreColor(), decoration.sideColor(), labelColor, true));
 		return disc;
@@ -86,5 +84,21 @@ public class ApplyLabelRecipe extends SpecialCraftingRecipe {
 	@Override
 	public net.minecraft.recipe.RecipeSerializer<?> getSerializer() {
 		return ModRecipes.APPLY_LABEL;
+	}
+
+	private boolean isDisc(ItemStack stack) {
+		return stack.isOf(ModItems.CUSTOM_RECORD) || stack.isOf(ModItems.CUSTOM_RECORD_REWRITABLE);
+	}
+
+	private int getLabelColor(ItemStack label) {
+		var item = (DyeableItem) label.getItem();
+		if (item.hasColor(label)) {
+			var color = item.getColor(label);
+			if (color != 0) {
+				return color;
+			}
+		}
+
+		return ((DiscComponentItem) label.getItem()).getDefaultColor();
 	}
 }
