@@ -102,7 +102,7 @@ public class ModClient implements ClientModInitializer {
 	}
 
 	private static int scaleColor(int color) {
-		var factor = 1.0f;
+		var factor = 0.95f;
 
 		var red = Math.min(255, (int) (((color >> 16) & 0xFF) * factor));
 		var green = Math.min(255, (int) (((color >> 8) & 0xFF) * factor));
