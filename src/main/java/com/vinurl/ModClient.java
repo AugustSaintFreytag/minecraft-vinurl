@@ -44,11 +44,15 @@ public class ModClient implements ClientModInitializer {
 		ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
 			var decoration = CustomMusicDiscItem.getDecoration(stack);
 
+			if (!stack.hasNbt()) {
+				return 0xFFFFFF;
+			}
+
 			return switch (tintIndex) {
-			case 0 -> scaleColor(decoration.sideColor()); // bottom side
-			case 1 -> scaleColor(decoration.coreColor()); // core
-			case 2 -> scaleColor(decoration.sideColor()); // top side
-			case 3 -> scaleColor(decoration.labelColor()); // label
+			case 0 -> scaleColor(decoration.sideColor()); // Bottom Side
+			case 1 -> scaleColor(decoration.coreColor()); // Core
+			case 2 -> scaleColor(decoration.sideColor()); // Top Side
+			case 3 -> decoration.hasLabel() ? scaleColor(decoration.labelColor()) : 0xFFFFFF; // Label
 			default -> 0xFFFFFF;
 			};
 		}, ModItems.CUSTOM_RECORD);
