@@ -1,9 +1,9 @@
 {
 	"item.vinurl.custom_record": "Custom Music Disc",
 	"item.vinurl.custom_record_rewritable": "Rewritable Music Disc",
-	"item.vinurl.custom_record.desc": "A custom music disc that can be pressed once.",
-	"item.vinurl.custom_record_rewritable.desc": "A custom music disc that can be pressed multiple times.",
-	"text.vinurl.custom_record.locked.tooltip": "Disc has already been pressed!",
+	"item.vinurl.custom_record.desc": "Custom Music",
+	"item.vinurl.custom_record_rewritable.desc": "Custom Music",
+	"text.vinurl.custom_record.locked.message": "Disc has already been pressed!",
 	"item.vinurl.disc_core": "Disc Core",
 	"item.vinurl.disc_side": "Disc Side",
 	"item.vinurl.disc_label": "Disc Label",

@@ -46,7 +46,7 @@ public class ServerEvents {
 			NbtCompound currentData = stack.getOrCreateNbt();
 
 			if (currentData.getBoolean(CustomMusicDiscItem.DISC_LOCKED_NBT_KEY)) {
-				player.sendMessage(Text.translatable("text.vinurl.custom_record.locked.tooltip"), true);
+				player.sendMessage(Text.translatable("text.vinurl.custom_record.locked.message"), true);
 				return;
 			}
 

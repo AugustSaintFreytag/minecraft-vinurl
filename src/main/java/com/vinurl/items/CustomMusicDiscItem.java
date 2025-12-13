@@ -56,7 +56,7 @@ public class CustomMusicDiscItem extends MusicDiscItem {
 
 				ModNetworking.NETWORK_CHANNEL.serverHandle(player).send(event);
 			} else {
-				player.sendMessage(Text.translatable("text.vinurl.custom_record.locked.tooltip"), true);
+				player.sendMessage(Text.translatable("text.vinurl.custom_record.locked.message"), true);
 			}
 		}
 
@@ -67,17 +67,13 @@ public class CustomMusicDiscItem extends MusicDiscItem {
 
 	@Override
 	public void appendTooltip(ItemStack stack, @Nullable
-	World world, List<Text> tooltip, TooltipContext context) {
+	World world, List<Text> lines, TooltipContext context) {
 		NbtCompound nbt = stack.getOrCreateNbt();
-		if (nbt.equals(new NbtCompound())) {
+		if (nbt.isEmpty()) {
 			return;
 		}
 
-		tooltip.add(Text.translatable("itemGroup.tools").formatted(Formatting.BLUE));
-
-		if (nbt.getBoolean(DISC_LOCKED_NBT_KEY)) {
-			tooltip.add(Text.translatable("text.vinurl.custom_record.locked.tooltip").formatted(Formatting.GRAY));
-		}
+		lines.add(Text.translatable("itemGroup.tools").formatted(Formatting.BLUE));
 	}
 
 	public static DiscDecoration getDecoration(ItemStack stack) {
