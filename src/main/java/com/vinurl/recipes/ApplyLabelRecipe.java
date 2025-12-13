@@ -5,6 +5,7 @@ import com.vinurl.ModRecipes;
 import com.vinurl.items.CustomMusicDiscItem;
 import com.vinurl.items.DiscComponentItem;
 import com.vinurl.items.DiscDecoration;
+
 import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.DyeableItem;
 import net.minecraft.item.ItemStack;
@@ -27,6 +28,7 @@ public class ApplyLabelRecipe extends SpecialCraftingRecipe {
 
 		for (var slot = 0; slot < inventory.size(); slot++) {
 			var stack = inventory.getStack(slot);
+
 			if (stack.isEmpty()) {
 				continue;
 			}
@@ -49,11 +51,12 @@ public class ApplyLabelRecipe extends SpecialCraftingRecipe {
 
 	@Override
 	public ItemStack craft(RecipeInputInventory inventory, DynamicRegistryManager registryManager) {
-		ItemStack disc = ItemStack.EMPTY;
-		ItemStack label = ItemStack.EMPTY;
+		var disc = ItemStack.EMPTY;
+		var label = ItemStack.EMPTY;
 
 		for (var slot = 0; slot < inventory.size(); slot++) {
 			var stack = inventory.getStack(slot);
+
 			if (stack.isEmpty()) {
 				continue;
 			}
