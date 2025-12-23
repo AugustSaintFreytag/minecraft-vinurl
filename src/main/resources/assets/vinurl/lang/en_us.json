@@ -1,4 +1,6 @@
 {
+	"category.vinurl": "VinURL",
+	"key.vinurl.accept": "Add Provider",
 	"item.vinurl.custom_record": "Custom Music Disc",
 	"item.vinurl.custom_record_rewritable": "Rewritable Music Disc",
 	"item.vinurl.custom_record.desc": "Custom Music",
@@ -11,7 +13,6 @@
 	"item.vinurl.disc_core.dyed": "Dyed %s",
 	"item.vinurl.disc_side.dyed": "Dyed %s",
 	"item.vinurl.disc_label.dyed": "Dyed %s",
-	"key.vinurl.accept": "Add Provider",
 	"text.autoconfig.vinurl.option.enableDownloads": "Enable Downloads",
 	"text.autoconfig.vinurl.option.checkForUpdatesOnStartup": "Check for Updates on Startup",
 	"text.autoconfig.vinurl.option.addDescriptionToItemTooltip": "Add Description to Item Tooltip",
